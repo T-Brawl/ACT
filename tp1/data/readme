@@ -1,0 +1,5 @@
+1.1 On peut conclure des courbes que n croît beaucoup plus vite que log(n).
+
+1.2.4 On peut conclure que les valeurs de certaines fonctions augmentent trop rapidement pour être une complexité intéressante.
+
+1.3.1 Avec les tracés, on conclut que la racine domine le logarithme, quelle que soit la racine, quelle que soit la base du logarithme.
