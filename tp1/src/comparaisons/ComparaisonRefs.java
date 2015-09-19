@@ -5,14 +5,10 @@ import io.EcritureFichier;
 public class ComparaisonRefs {
 	
 	public static double[] comparaison(double[] tab1, double[] tab2) {
-		double[] res = new double[tab1.length];
-		
-		for(int i = 0;i<tab1.length;i++) res[i] = tab1[i] / tab2[i];
-		
-		return res;
-		
+		double[] res = new double[tab1.length];		
+		for(int i = 0;i<tab1.length;i++) res[i] = tab1[i] / tab2[i]; 	
+		return res;		
 	}
-	
 	
 	
 	public static void main(String[] args) {
@@ -44,6 +40,15 @@ public class ComparaisonRefs {
 		
 		// Écriture du fichier de résultats
 		EcritureFichier.output("data/comparaisons_nlog_vs_npuis.txt", comps, sizes);
+		
+		double[][] comps1 = new double[4][];
+		comps1[0] = ComparaisonRefs.comparaison(results[1],fr.puissancen(2));
+		comps1[1] = ComparaisonRefs.comparaison(fr.puissance(10),fr.puissancen(2));
+		comps1[2] = ComparaisonRefs.comparaison(fr.puissance(20),fr.puissancen(2));
+		comps1[3] = ComparaisonRefs.comparaison(fr.puissance(50),fr.puissancen(2));
+		
+		// Écriture du fichier de résultats
+		EcritureFichier.output("data/comparaisons_npuisk_vs_2puisn.txt", comps1, sizes);
 	}
 	
 }
