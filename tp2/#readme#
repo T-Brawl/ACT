@@ -1,0 +1,43 @@
+Q2
+Quelles sont les conditions pour qu’une polyligne soit une ligne de toits ?
+pour (x1,y1),(x2,y2),(x3,y3),(x4,y4)
+x1<=x2
+soit x1=x2, soit y1=y2
+
+Q4
+Pseudo-code du parcours
+
+int x,y=0;
+int dernier_y 
+list <tuple (int,int)> polyline
+tant que x n'est pas maximum, et y est différent de zéro alors
+	  si le point(x,y+1) vaut 1 alors
+	        y=y+1
+	  sinon si le point(x+1,y) vaut 1 alors
+         	on ajoute à polyline le couple (x,y)
+		tant que le point(x+1,y) vaut 1 et (x,y+1)==0 alors
+	            x=x+1
+		fin tant que
+	  sinon si le point(x,y-1) vaut 1 alors
+	        y=y-1
+	  sinon
+	        erreur
+fin tant que
+
+si on a npixel sur n pixel,
+Dans le pire des cas, le tant que prend n opérations pour augmenter y
+le deuxième tant que prend n opérations pour augmenter x
+
+algo en O(n^2)
+
+Q5
+soit bats le tableau de batiment de coordonnées(X1, Y, X2)
+polilyne = liste point
+ajouter à polilyne (bats[1]X1,bats[1]y)
+ajouter à la polilyne (bats[1]X2,0)
+
+pour tout batiment B dans bats
+  ind=recherche dico de l'index
+  inserer 
+fin pour tout
+

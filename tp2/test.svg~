@@ -1,0 +1,74 @@
+Q 3.
+Quelle ligne de toits serait représentée par
+(1
+;
+1)(5
+;
+13)(9
+;
+20)(12
+;
+27)(16
+;
+3)(19
+;
+0)(22
+;
+3)(25
+;
+0)
+?
+La première représentation proposée a l’avantage d’être proche du format svg
+2
+, qu’on utilisera pour la
+sortie. La seconde est plus compacte (et est peut-être plus simple à manipuler pour certains algorithmes ?).
+Vous pouvez choisir celle qui vous plait le mieux -ou toute autre représentation !.
+Premières approches
+Donc, le problème est
+Entrée :
+n
+, un entier positif : le nombre d’immeubles
+une liste de n triplets d’entiers
+(
+g
+i
+; h
+i
+; d
+i
+)
+,
+d
+i
+> g
+i
+
+0
+; h
+i
+
+0
+représentant les immeubles.
+Sortie :
+un fichier svg représentant la ligne de toits correspondante
+Par exemple pour l’exemple ci-dessus, on pourrait avoir quelque chose comme :
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="-10 -150 200 150">
+<polyline points="1,0 1,11 3,11 3,13 9,13 9,0 12,0 12,7 16,7 16,3 19,3 19,18 22,18 22,3 25,3 25,0"
+stroke="blue" stroke-width="1" fill="none" transform="scale(5,-5)"/></svg>
+Remarque  :
+l’axe des y est dirigé par défaut avec les y croissants vers le bas. Le
+scale(3,-3)
+permet
+d’avoir les y croissants vers le haut d’une part et d’autre part de changer l’échelle. Pour vérifier l’exactitude de
+la solution , on pourrait aussi représenter les immeubles et la ligne de toits :
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300" viewBox="-10 -150
+200 150">
+<rect x ="3" y ="0" width ="6" height="13" transform=" scale(5,-5) " />
+<rect x ="1" y ="0" width ="4" height="11" transform=" scale(5,-5) " />
+<rect x ="19" y ="0" width ="3" height="18" transform=" scale(5,-5) " />
+<rect x ="3" y ="0" width ="4" height="6" transform=" scale(5,-5) " />
+<rect x ="16" y ="0" width ="9" height="3" transform=" scale(5,-5) " />
+<rect x ="12" y ="0" width ="4" height="7" transform=" scale(5,-5) " />
+<polyline points=
+"1,0 1,11 3,11 3,13 9,13 9,0 12 ,0 12,7 16,7 16,3 19,3 19,18 22,18 22,3 25,3 25,0 "
+stroke="green" stroke-width="1" fill="none" transform=" scale(5,-5) " /></svg>
