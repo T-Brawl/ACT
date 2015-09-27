@@ -24,8 +24,35 @@ tant que x n'est pas maximum, et y est différent de zéro alors
 	        erreur
 fin tant que
 
+fun pseudo-code
+
+
 si on a npixel sur n pixel,
 Dans le pire des cas, le tant que prend n opérations pour augmenter y
 le deuxième tant que prend n opérations pour augmenter x
 
-algo en O(n^2)
+algo en O(n²)
+
+Q5)
+pseudo-code
+
+list <tuple (int,int)> polyline
+pour chaque rectancle R	
+     iterateur it
+     soit le point p1 haut gauche et p2 bas droit du rectancle.
+     tant que p1(x)<it(x)
+          it suivant
+     fin tant que
+     ajouter p1 dans la liste juste avant it(x)
+     tant que vrai
+     	  it suivant
+     fin tant que
+     ajouter p2 dans la liste juste avant it(x)
+fin du pour chaque
+
+
+le parcour avec l'iterateur est de complexité maximum de parcours+ajout soit n  + 2
+on fait ça pour n/2 rectangle
+donc l'algorithme est en n/2 * (n+2) = O(n²)
+
+Q6
