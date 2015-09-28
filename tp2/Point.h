@@ -8,4 +8,4 @@ class Point{
   Point(int coord, int absc);
   int getX();
   int getY();
-}
+};
