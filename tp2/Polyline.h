@@ -10,14 +10,19 @@ class Polyline{
   Polyline(PointNode *p);
   PointNode *atBegin();
   PointNode *atEnd();
-}
+  void addBefore(PointNode *pn, Point *p);
+  void addAfter(PointNode *pn, Point *p);
+};
 
 class PolylineIterator{
  private:
   Polyline *target;
+  PointNode *current;
 
  public:
-  Iterator(Polyline p);
+  PolylineIterator(Polyline *p);
   void atBegin();
   void atEnd();
+  PointNode next();
+
 }
