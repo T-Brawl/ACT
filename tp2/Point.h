@@ -1,11 +1,14 @@
+#include <string>
+
 class Point{
-  private:
+ private:
   int x;
   int y;
 
-  public:
+ public:
   Point();
-  Point(int coord, int absc);
+  Point(int ord, int abs);
   int getX();
   int getY();
+  std::string toString();
 };

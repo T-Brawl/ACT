@@ -1,4 +1,5 @@
 #include "Point.h"
+#include <string>
 
 Point::Point():x(0),y(0){
 };
@@ -12,4 +13,10 @@ int Point::getX(){
 
 int Point::getY(){
   return y;
+};
+
+std::string Point::toString(){
+  std::string res;
+  res += x+", "+y;
+  return res;
 };
