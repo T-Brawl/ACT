@@ -1,0 +1,30 @@
+TP 3 - Programmation dynamique
+
+AUTEURS : MOEVI Alexandre - LESAGE Yann
+
+---------------------------------------
+
+QUESTIONS
+
+1.
+
+
+		+3
+	________||____
+       ||	||  ||
+       +1	-2  ||
+       ||______/  \ ||
+       ||   ||	   \||
+       ||   +1	    +1     
+       ||___||______||
+		||
+		+0
+
+2.
+pour x la valeur de la position calculée et yi le ieme successeur
+x = -(max(yi) + 1), si pour tout yi, yi > 0
+x = -(max(yi<= 0)) + 1 s'il existe un yi <= 0
+
+---------------------------------------
+
+COMMENTAIRES
