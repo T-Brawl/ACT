@@ -1,6 +1,9 @@
 #include "Polyline.h"
 #include <std::string>
 
+Polyline::Polyline():begin(0), end(0), leng(0){
+};
+
 Polyline::Polyline(PointNode *p):begin(p), end(p), leng(1){
 };
 
@@ -13,31 +16,44 @@ PointNode *Polyline::atEnd(){
 }
 
 void Polyline::addBefore(PointNode *pn, Point *p){
+  
   PointNode *newNode;
   newNode = new PointNode(p);
-  if(pn->getPrevious()==0){
+  if (leng ==0){
+    leng=1;
+    begin=pn;
+    end=pn;
+  }else{
+    if(pn->getPrevious()==0){
       begin= newNode;
-  }else {
+    }else {
       newNode->setPrevious(pn->getPrevious);
       NewNode->getPrevious()->setNext(NewNode);
+    }
+    NewNode->setNext(pn);
+    pn->setPrevious(newNode);
+    leng+=1;
   }
-  NewNode->setNext(pn);
-  pn->setPrevious(newNode);
-  leng+=1;
 }
 
 void Polyline::addAfter(PointNode *pn, Point *p){
   PointNode *newNode;
   newNode = new PointNode(p);
-  if(pn->getPrevious()==0){
+  if (leng ==0){
+    leng=1;
+    begin=pn;
+    end=pn;
+  }else{
+    if(pn->getPrevious()==0){
       end= newNode;
-  }else {
+    }else {
       newNode->setNext(pn->getNext);
       NewNode->getNext()->setPrevious(NewNode);
+    }
+    NewNode->setPrevious(pn);
+    pn->setNext(newNode);
+    leng+=1;
   }
-  NewNode->setPrevious(pn);
-  pn->setNext(newNode);
-  leng+=1;
 }
 
 Polyline(*) Polyline::split(int nb_part){
@@ -65,30 +81,40 @@ Polyline Polyline::resolve(){
 we have one add ( O(1)) and between one to three comparaisons
 The fusion is in O(n)*/
 Polyline Polyline::fusion(Polyline p){
-  PointNode *current=this->atBegin();
-  PointNode *iter=pn->atBegin();
-  while(current!=0){
-    /*if the point of the second polyline have a point before the first polyline,
-      we add the point at the first polyline*/
-    if(current->getPoint()->getX() > pn->getPoint()->getX()){
-      this->addBefore(current,pn->getPoint());
-      pn=pn->getNext();
-    } else if (current->getPoint()->getX() == pn->getPoint()->getX()){
-      /*we save the heighter point if the two point have the same ordonne*/
-      if(current->getPoint()->getX()< pn->getPoint()->getX()){
-	current->setPoint(pn->getPoint());
+  Polyline result= new Polyline();
+  PointNode *it1=this->atBegin();
+  PointNode *it2=pn->atBegin();
+
+  Point *last1= it1->getPoint();
+  Point *last2=it2->getPoint();
+  while(it1!=0){
+    if(t2 ==0){
+      result->addAfter(this->atEnd(),it1->getPoint());
+      it1 = it1->next;
+    }else{
+      if (it1->getPoint()->getX() > it2->getPoint()->getX()){
+	this->insertFusion(it1,it2,last1, result);
+      }else{
+	this->insertFusion(it2,it1,last2, result);
       }
-      pn= pn->getNext();
-      current=current->getNext();
-    } else{
-      /*if the point of the first polyline is in place. we only past at the next point*/
-      current=current->getNext();
     }
   }
-  while(pn!=0){
-    this->addAfter(this->atEnd(),pn->getPoint());
+  while(it2!=0){
+    this->addAfter(this->atEnd(),it2->getPoint());
   }
 };
+
+void Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Polyline *result){
+  if(last1->getY()<= it2->getPoint()->getY()){
+    if (it1->getPoint()->getY() <= it2->getPoint()->getY()){
+      dernier2=it2->getPoint();
+    }else{
+      dernier2=new Point(it2->getPoint()->getX(), last1->getY());
+    }
+    result->addAfter(this->atEnd(),dernier2);
+  }
+  it2 = it2->next;
+}
 
 string Polyline::toString(){
   string res= new string();

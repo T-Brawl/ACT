@@ -36,23 +36,71 @@ algo en O(n²)
 Q5)
 pseudo-code
 
+2 list en param l1 et l2
+
 list <tuple (int,int)> polyline
-pour chaque rectancle R	
-     iterateur it
-     soit le point p1 haut gauche et p2 bas droit du rectancle.
+it = iterateur sur l2
+pour chaque point p1 de l1
      tant que p1(x)<it(x)
+          derniery= it(y)
           it suivant
      fin tant que
-     ajouter p1 dans la liste juste avant it(x)
-     tant que vrai
-     	  it suivant
-     fin tant que
-     ajouter p2 dans la liste juste avant it(x)
+     si p1(x)==it(x) et p1(y)>it(y) et p1suivant(y) > y
+     si p1(y)>derniery
+     	ajouter p1 dans la liste juste avant it(x)
+     fin si
 fin du pour chaque
+//rajouter la boucle pour supprimer les mauvais points
 
 
-le parcour avec l'iterateur est de complexité maximum de parcours+ajout soit n  + 2
-on fait ça pour n/2 rectangle
-donc l'algorithme est en n/2 * (n+2) = O(n²)
+2 list en param l1 et l2
+
+resultat = nouvelle liste polyline
+it1 = iterateur sur l1
+it2 = iterateur sur l2
+
+//derniers points ajouter
+dernier1= p1
+dernier2 =p2
+tant que it1!=fin
+     si it2 == fin
+     	ajouter a resultat it1(point)
+	it1 next
+     sinon
+	si it1(point(x))>it2(point(x))
+	   si dernier1(y)<=it2(point(y))
+              si it1(point(y))<=it2(point(y))
+	      	 on ajoute à resultat it2(point)
+	      sinon
+		//cas de rajout d'intersection
+	       dernier2= nouveau point(it2(point(x)), dernier1(y))
+	       on ajoute a resultat dernier2
+	      fin si
+	   fin si
+	   it2 next
+     	sinon
+	   si it1(point(y))>= dernier2(y)
+	      si it1(point(y))>=it2(point(y))
+	      	 on ajoute à resultat it1(point)
+	      	 dernier1=it1(point)
+	      sinon
+		//cas de rajout d'intersection
+		dernier1= nouveau point(it1(point(x)), dernier(y))
+		on ajoute a resultat dernier1
+	      fin si
+	   fin si
+	   it1 next
+	fin si
+    fin si
+fin tant que
+tant que it2!=fin
+     on ajoute à resultat it2(point)
+     it2 next
+fin tant que
+retourne resultat
+
+si n= total de point
+le parcour avec les itérateur est de 1 pour chaque point.
+donc l'algorithme est en n+comparaison en O(1) +insertion en O(1) = O(n)
 
 Q6
