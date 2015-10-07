@@ -14,7 +14,7 @@ PointNode* PointNode::getPrevious(){
   return previous;
 };
 
-Point *getPoint(){
+Point *PointNode::getPoint(){
   return point;
 }
 

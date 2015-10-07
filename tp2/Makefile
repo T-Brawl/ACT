@@ -1,16 +1,16 @@
-OPTIONS = -W -Wall -g
-Link_OPT = -W -Wall -c
+OPTIONS = -W -Wall -g -std=c++11
+Link_OPT = -W -Wall -c -std=c++11
 CC = g++
 
-all : display_stack try_mul 
+all : svg
 
-display_stack: display_stack.o
-	$(CC) $(OPTIONS) -o display_stack display_stack.o
+svg: Svg.cpp Polyline.o Polyline.h PointNode.o PointNode.h Point.o Point.h
+	$(CC) $(OPTIONS) -o svg Svg.cpp Polyline.o PointNode.o Point.o
 
-try_mul: try_mul.o try.o
-	$(CC) $(OPTIONS) -o try_mul try_mul.o try.o
 
-PointNode: PointNode.h Point.o Point.h
+Polyline.o: Polyline.h PointNode.o PointNode.h Point.o Point.h
+
+PointNode.o: PointNode.h Point.o Point.h
 
 Point.o: Point.h
 
@@ -18,4 +18,4 @@ Point.o: Point.h
 	$(CC) $(Link_OPT) $< 
 
 clean:
-	rm *.o *~ display_stack try_mul
+	rm *.o *~ svg

@@ -1,10 +1,18 @@
 #include "Polyline.h"
-#include <std::string>
+#include <string>
+#include <iostream>  
+#include <fstream>
+
+using namespace std;
 
 Polyline::Polyline():begin(0), end(0), leng(0){
 };
 
 Polyline::Polyline(PointNode *p):begin(p), end(p), leng(1){
+};
+
+
+Polyline::Polyline(PointNode *p, PointNode *end, int length):begin(p), end(end), leng(length){
 };
 
 PointNode *Polyline::atBegin(){
@@ -23,14 +31,16 @@ void Polyline::addBefore(PointNode *pn, Point *p){
     leng=1;
     begin=pn;
     end=pn;
+    pn->setNext(pn);
+    pn->setPrevious(pn);
   }else{
     if(pn->getPrevious()==0){
       begin= newNode;
     }else {
-      newNode->setPrevious(pn->getPrevious);
-      NewNode->getPrevious()->setNext(NewNode);
+      newNode->setPrevious(pn->getPrevious());
+      newNode->getPrevious()->setNext(newNode);
     }
-    NewNode->setNext(pn);
+    newNode->setNext(pn);
     pn->setPrevious(newNode);
     leng+=1;
   }
@@ -43,102 +53,91 @@ void Polyline::addAfter(PointNode *pn, Point *p){
     leng=1;
     begin=pn;
     end=pn;
+    pn->setNext(NULL);
+    pn->setPrevious(NULL);
   }else{
-    if(pn->getPrevious()==0){
+    if(pn->getNext()==NULL){
       end= newNode;
+      newNode->setNext(0);
     }else {
-      newNode->setNext(pn->getNext);
-      NewNode->getNext()->setPrevious(NewNode);
+      newNode->setNext(pn->getNext());
+      newNode->getNext()->setPrevious(newNode);
     }
-    NewNode->setPrevious(pn);
+    newNode->setPrevious(pn);
     pn->setNext(newNode);
     leng+=1;
   }
 }
 
-Polyline(*) Polyline::split(int nb_part){
+void Polyline::split(Polyline *arr[]){
   int lg= leng/2;
   PointNode *current=this->atBegin();
-  Polyline res[2];
   for(int i=0; i<lg;i++){
       current= current->getNext();
   }
-  res[0]= new polyline(this->atBegin(), current, lg);
-  res[1]=new polyline(current->getNext(), this->atEnd(), leng-lg);
-  return res;
+  arr[0]= Polyline(this->atBegin(), current, lg).resolve();
+  arr[1]= Polyline(current->getNext(), this->atEnd(), leng-lg).resolve();
 }
 
-Polyline Polyline::resolve(){
+Polyline *Polyline::resolve(){
   if(leng<2){
     return this;
   }
-  polyline tmp[2];
-  tmp =this->split();
-  return tmp[2].fusion(tmp[1]);
+  Polyline *tmp[2];
+  this->split(tmp);
+  Polyline *pointer=tmp[1];
+  return tmp[0]->fusion(pointer);
 }
 
 /*complexity : we parse the two polyline and see all points(n points) only time
 we have one add ( O(1)) and between one to three comparaisons
 The fusion is in O(n)*/
-Polyline Polyline::fusion(Polyline p){
-  Polyline result= new Polyline();
+Polyline *Polyline::fusion(Polyline *p){
+  Polyline *result= new Polyline();
   PointNode *it1=this->atBegin();
-  PointNode *it2=pn->atBegin();
+  PointNode *it2=p->atBegin();
 
   Point *last1= it1->getPoint();
   Point *last2=it2->getPoint();
   while(it1!=0){
-    if(t2 ==0){
+    if(it2 ==0){
       result->addAfter(this->atEnd(),it1->getPoint());
-      it1 = it1->next;
+      it1 = it1->getNext();
     }else{
       if (it1->getPoint()->getX() > it2->getPoint()->getX()){
-	this->insertFusion(it1,it2,last1, result);
+	this->insertFusion(it1,it2,last1, last2, result);
       }else{
-	this->insertFusion(it2,it1,last2, result);
+	this->insertFusion(it2,it1,last2, last1, result);
       }
     }
   }
   while(it2!=0){
-    this->addAfter(this->atEnd(),it2->getPoint());
+    result->addAfter(this->atEnd(),it2->getPoint());
   }
+  return result;
 };
 
-void Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Polyline *result){
-  if(last1->getY()<= it2->getPoint()->getY()){
+void Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *last2,Polyline *result){
+  if(result->atEnd()->getPoint()->getY()<= it2->getPoint()->getY()){
     if (it1->getPoint()->getY() <= it2->getPoint()->getY()){
-      dernier2=it2->getPoint();
+      last2=it2->getPoint();
     }else{
-      dernier2=new Point(it2->getPoint()->getX(), last1->getY());
+      last2=new Point(it2->getPoint()->getX(), last1->getY());
     }
-    result->addAfter(this->atEnd(),dernier2);
+    result->addAfter(this->atEnd(),last2);
+  }else{
+    last2=it2->getPoint();
   }
-  it2 = it2->next;
+  it2 = it2->getNext();
 }
 
-string Polyline::toString(){
-  string res= new string();
+std::string Polyline::toString(){
+  std::string res="";
   PointNode *current=this->atBegin();
   while(current!=0){
     res+=current->getPoint()->toString();
-    res=+=" ";
-    current= current->next();
+    res+=" ";
+    current= current->getNext();
   }
   return res;
 }
-
-PolylineIterator::PolylineIterator(Polyline *p):target(p),current(p->atBegin()){
-};
-
-void PolylineIterator::atBegin(){
-    current=target->atBegin();
-};
-
-void PolylineIterator::atEnd(){
-    current=target->atEnd();
-};
-
-PointNode PolylineIterator::next(){
-    current=current->getNext();
-    return current;
-};

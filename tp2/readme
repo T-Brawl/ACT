@@ -68,18 +68,21 @@ tant que it1!=fin
 	it1 next
      sinon
 	si it1(point(x))>it2(point(x))
-	   si dernier1(y)<=it2(point(y))
+	   si resultat->dernier point(y)<=it2(point(y))
               si it1(point(y))<=it2(point(y))
 	      	 on ajoute à resultat it2(point)
+		 dernier2 = it2(point)
 	      sinon
 		//cas de rajout d'intersection
 	       dernier2= nouveau point(it2(point(x)), dernier1(y))
 	       on ajoute a resultat dernier2
 	      fin si
+	   sinon
+		dernier2 = it2(point)
 	   fin si
 	   it2 next
      	sinon
-	   si it1(point(y))>= dernier2(y)
+	   si it1(point(y))>= resultat->dernier point(y)
 	      si it1(point(y))>=it2(point(y))
 	      	 on ajoute à resultat it1(point)
 	      	 dernier1=it1(point)
@@ -88,6 +91,8 @@ tant que it1!=fin
 		dernier1= nouveau point(it1(point(x)), dernier(y))
 		on ajoute a resultat dernier1
 	      fin si
+	   sinon
+		dernier1 = it1(point)
 	   fin si
 	   it1 next
 	fin si
