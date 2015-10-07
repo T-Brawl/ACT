@@ -1,5 +1,5 @@
-OPTIONS = -W -Wall -g -std=c++11
-Link_OPT = -W -Wall -c -std=c++11
+OPTIONS = -W -Wall -Werror -g -Wpedantic -std=c++11
+Link_OPT = -W -Wall -Werror -g -c -Wpedantic -std=c++11
 CC = g++
 
 all : svg
