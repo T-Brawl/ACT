@@ -6,7 +6,7 @@ class Polyline{
   PointNode *begin;
   PointNode *end;
   int leng;
-  void insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *last2,Polyline *result);
+  PointNode * insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *last2,Polyline *result);
 
  public:
   Polyline();

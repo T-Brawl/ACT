@@ -37,7 +37,7 @@ class Svg{
 
 Svg::Svg(Polyline *p){
   points = p->resolve();
-};
+}
 
 string Svg::getDocument(){
   string res="";
@@ -86,7 +86,12 @@ int main(int argc, char** argv){
       int1 = stoi(sep[0]);
       int2 = stoi(sep[1]);
       int3 = stoi(sep[2]);
-      p->addAfter(p->atEnd(), new Point(int1, int2));
+      
+   std::cerr << int1<<" " <<int2<<" " <<int3<<" " << std::endl;
+      Point *pointun= new Point(int1, int2);
+      string st=pointun->toString();
+      p->addAfter(p->atEnd(), pointun);
+      cerr << st << endl;
       p->addAfter(p->atEnd(), new Point(int3, 0));
     }
     ifile.close(); 

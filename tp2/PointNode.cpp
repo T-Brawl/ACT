@@ -1,18 +1,26 @@
 #include "PointNode.h"
+#include <iostream> 
+#include <fstream>
 
-PointNode::PointNode(Point *p):point(p), next(0), previous(0){
-};
+using namespace std;
 
-PointNode::PointNode(Point *p, PointNode *prev, PointNode *nex):point(p), previous(prev), next(nex){
-};
+PointNode::PointNode(Point *p):point(p), next(NULL), previous(NULL){
+}
+
+PointNode::PointNode(Point *p, PointNode *prev, PointNode *nex){
+  point=p;
+  cerr << "fail avec "<< nex << endl;
+  previous=prev;
+  next=nex;
+}
 
 PointNode* PointNode::getNext(){
   return next;
-};
+}
 
 PointNode* PointNode::getPrevious(){
   return previous;
-};
+}
 
 Point *PointNode::getPoint(){
   return point;

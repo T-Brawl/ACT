@@ -6,14 +6,14 @@
 using namespace std;
 
 Polyline::Polyline():begin(0), end(0), leng(0){
-};
+}
 
 Polyline::Polyline(PointNode *p):begin(p), end(p), leng(1){
-};
+}
 
 
 Polyline::Polyline(PointNode *p, PointNode *end, int length):begin(p), end(end), leng(length){
-};
+}
 
 PointNode *Polyline::atBegin(){
   return begin;
@@ -46,15 +46,14 @@ void Polyline::addBefore(PointNode *pn, Point *p){
   }
 }
 
-void Polyline::addAfter(PointNode *pn, Point *p){
+void Polyline::addAfter(PointNode *pn, Point *p ){
   PointNode *newNode;
   newNode = new PointNode(p);
   if (leng ==0){
     leng=1;
-    begin=pn;
-    end=pn;
-    pn->setNext(NULL);
-    pn->setPrevious(NULL);
+    begin=newNode;
+    end=newNode;
+    //newNode have already next and previous at NULL
   }else{
     if(pn->getNext()==NULL){
       end= newNode;
@@ -80,7 +79,16 @@ void Polyline::split(Polyline *arr[]){
 }
 
 Polyline *Polyline::resolve(){
+  cerr << "resolve    "<< to_string(leng)<< endl;
   if(leng<2){
+    return this;
+  }
+  if (leng==2){
+    if(begin->getPoint()->getX()>end->getPoint()->getX()){
+      PointNode *tmp=begin;
+      begin=end;
+      end=tmp;
+    }
     return this;
   }
   Polyline *tmp[2];
@@ -97,27 +105,47 @@ Polyline *Polyline::fusion(Polyline *p){
   PointNode *it1=this->atBegin();
   PointNode *it2=p->atBegin();
 
+  std::cerr << this->toString() <<" == 1 NULL ?" << std::endl;
+   std::cerr << p->toString() <<" == 2 NULL ?" << std::endl;
+   
+
   Point *last1= it1->getPoint();
   Point *last2=it2->getPoint();
-  while(it1!=0){
-    if(it2 ==0){
-      result->addAfter(this->atEnd(),it1->getPoint());
+  //add the first point to avoid error NULL pointer
+  if(it1->getPoint()->getX()>it2->getPoint()->getX()){
+    result->addAfter(result->atEnd(),it2->getPoint());
+    it2 = it2->getNext();
+  }else{
+    result->addAfter(result->atEnd(),it1->getPoint());
+    it1 = it1->getNext();
+  }
+  while(it1!=NULL){
+    std::cerr << it1 <<" == 1 NULL ?" << std::endl;
+    std::cerr << it2 <<" == 2 NULL ?" << std::endl;
+    if(it2 ==NULL){
+      std::cerr <<"it2 null" << std::endl;
+      result->addAfter(result->atEnd(),it1->getPoint());
       it1 = it1->getNext();
     }else{
       if (it1->getPoint()->getX() > it2->getPoint()->getX()){
-	this->insertFusion(it1,it2,last1, last2, result);
+	it2=this->insertFusion(it1,it2,last1, last2, result);
+	
+      std::cerr <<"it2 avance" << std::endl;
       }else{
-	this->insertFusion(it2,it1,last2, last1, result);
+	
+	std::cerr <<"it1 avance" << std::endl;
+	it1=this->insertFusion(it2,it1,last2, last1, result);
       }
     }
   }
-  while(it2!=0){
-    result->addAfter(this->atEnd(),it2->getPoint());
+  while(it2!=NULL){
+    result->addAfter(result->atEnd(),it2->getPoint());
+    it2=it2->getNext();
   }
   return result;
-};
+}
 
-void Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *last2,Polyline *result){
+PointNode * Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *last2,Polyline *result){
   if(result->atEnd()->getPoint()->getY()<= it2->getPoint()->getY()){
     if (it1->getPoint()->getY() <= it2->getPoint()->getY()){
       last2=it2->getPoint();
@@ -128,15 +156,20 @@ void Polyline::insertFusion(PointNode *it1,PointNode *it2,Point *last1,Point *la
   }else{
     last2=it2->getPoint();
   }
-  it2 = it2->getNext();
+  return  it2->getNext();
 }
 
 std::string Polyline::toString(){
   std::string res="";
   PointNode *current=this->atBegin();
-  while(current!=0){
+  while(current!=NULL){
+    
+    std::cerr <<current << std::endl;
+    std::cerr <<current->getPoint() << std::endl;
+    std::cerr <<current->getPoint()->toString() << std::endl;
     res+=current->getPoint()->toString();
     res+=" ";
+    std::cerr <<res  << std::endl;
     current= current->getNext();
   }
   return res;
