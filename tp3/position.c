@@ -35,10 +35,10 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
     *
     */
     flag = 0;
-    if(m == 1 && n == 1) return 0;
+    if(m == 1 && n == 1 && i == 0 && j ==0) return 0;
 
     for(cpt=1; cpt<m;cpt++){
-        if(cpt<i){
+        if(cpt<=i){
             tmp = position_naive(m-cpt, n, i-cpt,j);
         }else{
             tmp = position_naive(cpt, n,i,j);
@@ -52,7 +52,7 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
     }
 
     for(cpt=1; cpt<n;cpt++){
-        if(cpt<j){
+        if(cpt<=j){
             tmp = position_naive(m, n-cpt, i,j-cpt);
         }else{
             tmp = position_naive(m, cpt,i,j);
@@ -158,7 +158,7 @@ int main (int argc, char *argv[]){
     res = position_naive(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
     //res = position_naive(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
     //res = position_naive(100,100,50,50);
-    printf("Résultat = %d\n",res);
+    printf("RÃ©sultat = %d\n",res);
 
     return 0;
 }
