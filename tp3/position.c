@@ -151,6 +151,22 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
   return 0;
 }
 
+void print_chocolate(unsigned int m, unsigned int n, unsigned int i, unsigned int j) {
+    int row=0,column=0;
+    printf("  ");
+    for(row;row<m;row++) printf("%d ",row);
+    printf("\n");
+    for(column;column<n;column++) {
+            printf("%d ",column);
+            for(row=0;row<m;row++) {
+                if(i == row && j == column) printf("X "); else printf(". ");
+            }
+            printf("\n");
+    }
+    printf("\n");
+}
+
+
 int main (int argc, char *argv[]){
 
     int res;
