@@ -149,10 +149,10 @@ int position_dyna_fast(int m, int n, int i, int j){
     j=i;
   }
   if((m/2)<i){
-    i=m-i;
+    i=m-i>=0?m-i:i-m;
   }
   if((n/2)<j){
-    j=n-j;
+    j=n-j>=0?n-j:j-n;
   }
   if(tab[m-1][n-1][i][j]!=0){
     return tab[m-1][n-1][i][j];
@@ -174,13 +174,13 @@ int position_dyna_fast(int m, int n, int i, int j){
     height=cut_in_height(arr);
    
     if(width<0 && height<0){
-      tab[m-1][n-1][i][j]=max(width, height);
+      tab[m-1][n-1][i][j]=max( width, height);
     }if(width<0){
       tab[m-1][n-1][i][j]=height;
     }else if(height<0){
       tab[m-1][n-1][i][j]=width;
     }else{
-      tab[m-1][n-1][i][j]=min(width, height);
+      tab[m-1][n-1][i][j]=min( width, height);
     }
   }
   /*printf("%d %d %d %d  console.log %d \n",m,n,i,j,tab[m-1][n-1][i][j]);*/
