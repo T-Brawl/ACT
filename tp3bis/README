@@ -34,7 +34,7 @@ temps = 10.614353
 Résultat = 11
 temps = 8.301449
 
-La différence de temps s'explique par le nombre de récursion à effectué. En effet si un joueur peut gagner, il va écourter au maximum le jeu et donc diminuer le nombre de récursion
+La différence de temps s'explique par le nombre de récursions à effectuer. En effet si un joueur peut gagner, il va écourter au maximum le jeu et donc diminuer le nombre de récursions.
 
 
 4.
@@ -49,12 +49,12 @@ temps = 25.402023
 5.
 
 6.
-fusion(n)=n*8comparaison+1addition+1changement de signe
+fusion(n)=8n comparaisons + 1 addition + 1 changement de signe
          =O(n)
 dyna(m,n) = somme(dyna(i))+ somme(dyna(j))+fusion(n) pour 0<i<m et 0<j<n
 si m~n
-dyna(n) = 2*somme(dyna(i))+O(n) pour 0<i<n
-on ne peut pas utiliser le master théorème car on change à chaque fois la taille du sous problème.Mais on peut approximé :
+dyna(n) = 2 * somme(dyna(i))+O(n) pour 0<i<n
+On ne peut pas utiliser le master théorème car on change à chaque fois la taille du sous problème. Mais on peut approximer :
 dyna(n)=2*(n!+(n-1)!+(n-2)!+...+2 +1)+n*O(n)
 
 
@@ -62,9 +62,9 @@ dyna(n)=2*(n!+(n-1)!+(n-2)!+...+2 +1)+n*O(n)
 Elles ont la même solution car c'est la même plaque à une rotation et une homothétie près.
 
 8.
-on peut exploité ça en disant i toujours supérieur à j sinon on inverse i et j 
-puis si i>m/2 alors on fait une sysmétrie axiale
-puis si j>n/2 alors on fait une sysmétrie axiale
+on peut exploiter ça en disant i toujours supérieur à j sinon on inverse i et j 
+puis si i>m/2 alors on fait une symétrie axiale
+puis si j>n/2 alors on fait une symétrie axiale
 
 ---------------------------------------
 

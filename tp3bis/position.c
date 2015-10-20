@@ -6,10 +6,11 @@ enum dim_e {width,height};
 
 typedef enum dim_e dimension;
 
-typedef int (func_t)(int,int,int,int );
+typedef int (func_t)(int,int,int,int);
 
 static func_t* recursive;
 static int ****tab;
+static int canfree = 1;
 
 #define max(a,b) \
    ({ __typeof__ (a) _a = (a); \
@@ -44,8 +45,8 @@ int cut_in(int arr[],dimension d){
   int cpt,tmp,res;
   /*res must be never equal to 0, except when m and n are equal to 1*/
   res=1;
-  /*we search the heighter int<0 or if not exist, the heighter int
-   after we add+1 at the aboslute value and change the sign
+  /*we search the greatest int<0 or if not exist, the greatest int
+   after we add+1 to the aboslute value and change the sign
    we start to 1 to avoid test the same case in infinity*/
   for(cpt=1; cpt<arr[d];cpt++){
     tmp=launch_rec_one(arr,d,cpt);
@@ -98,7 +99,7 @@ int position_naive(int m, int n, int i, int j){
   }else if(height<0){
     return width;
   }else{
-    return min( width, height);
+    return min(width, height);
   }
 }
 
@@ -135,13 +136,13 @@ int position_dyna(int m, int n, int i, int j){
       tab[m-1][n-1][i][j]=min( width, height);
     }
   }
-  /*printf("%d %d %d %d  console.log %d \n",m,n,i,j,tab[m-1][n-1][i][j]);*/
+  //printf("%d %d %d %d  console.log %d \n",m,n,i,j,tab[m-1][n-1][i][j]);
   return tab[m-1][n-1][i][j];
 }
 
 int position_dyna_fast(int m, int n, int i, int j){
   int width, height, arr[4],tmp;
-  printf("%d %d %d %d \n",m,n,i,j);
+  
   if(i<j){
     tmp=i;
     i=j;
@@ -151,7 +152,7 @@ int position_dyna_fast(int m, int n, int i, int j){
     i=m-i;
   }
   if((n/2)<j){
-    j=n-i;
+    j=n-j;
   }
   if(tab[m-1][n-1][i][j]!=0){
     return tab[m-1][n-1][i][j];
@@ -173,13 +174,13 @@ int position_dyna_fast(int m, int n, int i, int j){
     height=cut_in_height(arr);
    
     if(width<0 && height<0){
-      tab[m-1][n-1][i][j]=max( width, height);
+      tab[m-1][n-1][i][j]=max(width, height);
     }if(width<0){
       tab[m-1][n-1][i][j]=height;
     }else if(height<0){
       tab[m-1][n-1][i][j]=width;
     }else{
-      tab[m-1][n-1][i][j]=min( width, height);
+      tab[m-1][n-1][i][j]=min(width, height);
     }
   }
   /*printf("%d %d %d %d  console.log %d \n",m,n,i,j,tab[m-1][n-1][i][j]);*/
@@ -207,6 +208,7 @@ int position_dyna_one(int m, int n, int i, int j){
     }
   
   solution =position_dyna(m,n,i-1,j-1);
+  if(canfree){
   for(k=0; k<m; k++)
     {
       for(l=0; l<n; l++)
@@ -220,6 +222,8 @@ int position_dyna_one(int m, int n, int i, int j){
       free(tab[k]);
     }
   free(tab);
+  }
+
   return solution;
 }
 
@@ -227,12 +231,9 @@ void search_for(int m, int n, int eq){
   int i, j;
   int res;
   
-  for(i=1;i<=m;i++){
-    for(j=1;j<=n;j++){
-      res = position_dyna_one(m,n,i,j);
-      if (res=eq){
-	printf("couple ( %d, %d) \n",i,j);
-      }
+  for(i=1;i<m-1;i++){
+    for(j=1;j<n-1;j++){
+	if (tab[m-1][n-1][i][j] == eq) printf("couple (%d, %d) \n",i,j);
     }
   }
   printf("\n");
@@ -268,6 +269,7 @@ int main (int argc, char *argv[]){
     }else{
       recursive=position_dyna;
       res = position_dyna_one(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+      //if(!canfree) search_for(127,127,127);
       printf("Résultat = %d\n",res);
     }
      
