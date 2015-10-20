@@ -1,0 +1,71 @@
+TP 3 - Programmation dynamique
+
+AUTEURS : MOEVI Alexandre - LESAGE Yann
+
+---------------------------------------
+
+QUESTIONS
+
+1.
+
+
+		+3
+	________||____
+       ||	||  ||
+       +1	-2  ||
+       ||______/  \ ||
+       ||   ||	   \||
+       ||   +1	    +1     
+       ||___||______||
+		||
+		+0
+
+2.
+pour x la valeur de la position calculée et yi le ieme successeur
+x = -(max(yi) + 1), si pour tout yi, yi > 0
+x = -(max(yi<= 0)) + 1 s'il existe un yi <= 0
+
+
+3.
+./M1/s1/ACT/tp3bis(master)* $ ./position naive 10 7 5 3 n
+Résultat = 13
+temps = 10.614353
+./M1/s1/ACT/tp3bis(master)* $ ./position naive 10 7 7 3 n
+Résultat = 11
+temps = 8.301449
+
+La différence de temps s'explique par le nombre de récursion à effectué. En effet si un joueur peut gagner, il va écourter au maximum le jeu et donc diminuer le nombre de récursion
+
+
+4.
+./M1/s1/ACT/tp3bis(master)* $ ./position 100 100 50 50 d
+Résultat = -103
+temps = 25.691273
+./M1/s1/ACT/tp3bis(master)* $ ./position 100 100 48 52 d
+Résultat = 104
+temps = 25.402023
+
+
+5.
+
+6.
+fusion(n)=n*8comparaison+1addition+1changement de signe
+         =O(n)
+dyna(m,n) = somme(dyna(i))+ somme(dyna(j))+fusion(n) pour 0<i<m et 0<j<n
+si m~n
+dyna(n) = 2*somme(dyna(i))+O(n) pour 0<i<n
+on ne peut pas utiliser le master théorème car on change à chaque fois la taille du sous problème.Mais on peut approximé :
+dyna(n)=2*(n!+(n-1)!+(n-2)!+...+2 +1)+n*O(n)
+
+
+7.
+Elles ont la même solution car c'est la même plaque à une rotation et une homothétie près.
+
+8.
+on peut exploité ça en disant i toujours supérieur à j sinon on inverse i et j 
+puis si i>m/2 alors on fait une sysmétrie axiale
+puis si j>n/2 alors on fait une sysmétrie axiale
+
+---------------------------------------
+
+COMMENTAIRES

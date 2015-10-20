@@ -1,0 +1,44 @@
+TP 3 - Programmation dynamique
+
+AUTEURS : MOEVI Alexandre - LESAGE Yann
+
+---------------------------------------
+
+QUESTIONS
+
+1.
+
+
+		+3
+	________||____
+       ||	||  ||
+       +1	-2  ||
+       ||______/  \ ||
+       ||   ||	   \||
+       ||   +1	    +1     
+       ||___||______||
+		||
+		+0
+
+2.
+pour x la valeur de la position calculée et yi le ieme successeur
+x = -(max(yi) + 1), si pour tout yi, yi > 0
+x = -(max(yi<= 0)) + 1 s'il existe un yi <= 0
+
+
+3.
+./M1/s1/ACT/tp3bis(master)* $ ./position naive 10 7 5 3
+Résultat = 13
+temps = 10.614353
+M1/s1/ACT/tp3bis(master)* $ ./position naive 10 7 7 3
+Résultat = 11
+temps = 8.301449
+
+La différence de temps s'explique par le nombre de récursion à effectué. En effet si un joueur peut gagner, il va écourter au maximum le jeu et donc diminuer le nombre de récursion
+
+
+4.
+
+---------------------------------------
+
+COMMENTAIRES
