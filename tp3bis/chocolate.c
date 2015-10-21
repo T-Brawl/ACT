@@ -8,13 +8,22 @@ enum dim_e {width,height};
 
 typedef enum dim_e dimension;
 
+struct solu_s{
+  int cost;
+  int best_cut;
+  dimension direction;
+};
+
+
+typedef struct solu_s solu;
+
 typedef int (func_t)(int,int,int,int);
 
 static func_t* recursive;
-static int ****tab, state,game_width,game_height,x_dead, y_dead,next_cut_in,user_number,stop;
+struct solu_s ****tab;
+static int  state,game_width,game_height,x_dead, y_dead,next_cut_in,user_number,stop;
 static char user_number_buff[10];
 static char *header[10];
-static int canfree = 1;
 
 #define max(a,b) \
    ({ __typeof__ (a) _a = (a); \
@@ -47,88 +56,115 @@ int launch_rec_one(int arr[4],dimension d, int cpt){
 }
 
 
-int cut_in(int arr[],dimension d){
-  int cpt,tmp,res;
+struct solu_s * cut_in(int arr[],dimension d){
+  int cpt,tmp;
+  struct solu_s * res;
   /*res must be never equal to 0, except when m and n are equal to 1*/
-  res=1;
+  res = (struct solu_s *)malloc(sizeof(struct solu_s));
+  res->cost=1;
   /*we search the greatest int<0 or if not exist, the greatest int
    after we add+1 to the aboslute value and change the sign
    we start to 1 to avoid test the same case in infinity*/
   for(cpt=1; cpt<arr[d];cpt++){
     tmp=launch_rec_one(arr,d,cpt);
     /*we don't have change sign*/
-    if(res>0 && tmp>0) {
-      res=max(res,tmp+1);
-    } else if (res>0 && tmp<=0){
-      res=tmp-1;
-    } else if (res<0 && tmp<=0){
-      res=max(res, tmp-1);
+    if(res->cost>0 && tmp>0) {
+      if(res->cost<tmp+1){
+	res->cost= tmp+1;
+	res->best_cut=cpt;
+      }
+    } else if (res->cost>0 && tmp<=0){
+      res->cost=tmp-1;
+      res->best_cut=cpt;
+    } else if (res->cost<0 && tmp<=0){
+      if(res->cost< tmp-1){
+	res->cost= tmp-1;
+	res->best_cut=cpt;
+      }
     }/*else {
       res=res;
     }*/
   }
-  return - res;
+  res->direction=d;
+  res->cost=-res->cost;
+  return res;
 }
 
-int cut_in_height(int arr[]){
+struct solu_s *cut_in_height(int arr[]){
   return cut_in(arr, height);
 }
 
-int cut_in_width(int arr[]){
+struct solu_s *cut_in_width(int arr[]){
   return cut_in(arr, width);
 }
 
 /*dyna_one*/
 int position_dyna(int m, int n, int i, int j){
-  int width, height;
+  struct solu_s wid, heig;
   int arr[4];
-  if(tab[m-1][n-1][i][j]!=0){
-    return tab[m-1][n-1][i][j];
+  if(tab[m-1][n-1][i][j].cost!=0){
+    return tab[m-1][n-1][i][j].cost;
   }
   if(m==1&&n==1){
-    tab[m-1][n-1][i][j]=0;
+    tab[m-1][n-1][i][j].cost=0;
   }else{
     arr[0]=m;
     arr[1]=n;
     arr[2]=i;
     arr[3]=j;
     if(n==1){
-      tab[m-1][n-1][i][j]=cut_in_width(arr);
+      wid= *cut_in_width(arr);
+      tab[m-1][n-1][i][j]=wid;
+      return wid.cost;
     }
     if(m==1){
-      tab[m-1][n-1][i][j]=cut_in_height(arr);
+      heig= *cut_in_height(arr);
+      tab[m-1][n-1][i][j]=heig;
+      return heig.cost;
     }
-    width=cut_in_width(arr);
-    height=cut_in_height(arr);
+    wid=*cut_in_width(arr);
+    heig=*cut_in_height(arr);
    
-    if(width<0 && height<0){
-      tab[m-1][n-1][i][j]=max( width, height);
-    }if(width<0){
-      tab[m-1][n-1][i][j]=height;
-    }else if(height<0){
-      tab[m-1][n-1][i][j]=width;
+    if(wid.cost<0 && heig.cost<0){
+      if(wid.cost>heig.cost){
+	tab[m-1][n-1][i][j]=wid;
+      }else{
+	tab[m-1][n-1][i][j]=heig;
+      }
+    }if(wid.cost<0){
+      tab[m-1][n-1][i][j]=heig;
+    }else if(heig.cost<0){
+      tab[m-1][n-1][i][j]=wid;
     }else{
-      tab[m-1][n-1][i][j]=min( width, height);
+      if(wid.cost<heig.cost){
+	tab[m-1][n-1][i][j]=wid;
+      }else{
+	tab[m-1][n-1][i][j]=heig;
+      }
     }
   }
-  return tab[m-1][n-1][i][j];
+  return tab[m-1][n-1][i][j].cost;
 }
 
 
 int solve_and_launch(int m, int n, int i, int j){
   int k,l,o,p,solution;
-  tab = (int****)malloc(sizeof(int***)*m);
+  tab = (struct solu_s****)malloc(sizeof(struct solu_s***)*m);
   for(k=0; k<m; k++)
     {
-      tab[k] = (int***)malloc(sizeof(int**)*n);
+      tab[k] = (solu***)malloc(sizeof(struct solu_s**)*n);
       for(l=0; l<n; l++)
 	{
-	  tab[k][l] = (int**)malloc(sizeof(int*)*i);
+	  tab[k][l] = (struct solu_s**)malloc(sizeof(struct solu_s*)*i);
 	  for( o=0; o<i;o++)
 	    {
-	      tab[k][l][o] = (int*)malloc(sizeof(int)*j);
+	      tab[k][l][o] = (struct solu_s*)malloc(sizeof(struct solu_s)*j);
 	      for(p=0;p<j;p++){
-		tab[k][l][o][p]=0;
+		struct solu_s tmp;
+		tmp.cost=0;
+		tmp.best_cut=-1;
+		tmp.direction =width;
+		tab[k][l][o][p]=tmp;
 	      }
 	    }
 	}
@@ -137,7 +173,6 @@ int solve_and_launch(int m, int n, int i, int j){
   y_dead--;
   position_dyna(m,n,x_dead, y_dead);
   game();
-  if(canfree){
   for(k=0; k<m; k++)
     {
       for(l=0; l<n; l++)
@@ -151,7 +186,6 @@ int solve_and_launch(int m, int n, int i, int j){
       free(tab[k]);
     }
   free(tab);
-  }
 
   return solution;
 }
@@ -177,28 +211,30 @@ void printconfig(){
     if(j==y_dead){
       line[x_dead]='X';
     }
-    mvprintw(4+j, 3, line);
+    mvprintw(3+j, 3, line);
   }
   
 }
 
 void cpu_play(){
-  int res,index;
-  index=0;
-  
+  struct solu_s s;
+  s = tab[game_width-1][game_height-1][x_dead][y_dead];
+  user_number = s.best_cut;
+  next_cut_in=s.direction;
+  change_configuration();
 }
 
 void change_configuration(){
   if( next_cut_in==width){
-    if (user_number< x_dead){
-      x_dead = x_dead-user_number;
-    }
     game_width= user_number;
-  } else{
-    if(user_number< y_dead){
-      y_dead = y_dead-user_number;
+    if (user_number< x_dead){
+      x_dead = x_dead - user_number;
     }
+  } else{
     game_height= user_number;
+    if(user_number< y_dead){
+      y_dead = y_dead - user_number;
+    }
   }
   user_number=0;
   sprintf(user_number_buff, "%d", user_number);
@@ -255,7 +291,28 @@ int game() {
   header[0]="CPU turn, push enter";
   header[1]="Your turn, cut in height(h) or width(w) ?";
   header[2]="Your turn, cut  at ? (writte a number and push enter)";
-  boite= subwin(stdscr, 30, 90, 2,1);
+  header[4]="You loose";
+
+  header[5]="You win";
+
+
+  printconfig();
+  refresh();
+  clear();
+  printconfig();
+  refresh();
+  clear();
+  printconfig();
+  refresh();
+  clear();
+  printconfig();
+  refresh();
+  clear();
+  printconfig();
+  refresh();
+  clear();
+  
+  boite= subwin(stdscr, game_height+2, game_width+4, 2,1);
   state=8;
   user_number=0;
   sprintf(user_number_buff, "%d", user_number);
@@ -265,11 +322,20 @@ int game() {
     
     box(boite, ACS_VLINE, ACS_HLINE);
     mvprintw(0,0,header[state]);
+    
+    printconfig();
+    if(game_width==1 && game_height==1 && x_dead==0 && x_dead==0){
+      if (state==1){
+	state=4;
+      } else if(state !=4){
+	state=5;
+      }
+    }
     if(state==2){
       mvprintw(1,0,user_number_buff);
     }
-    printconfig();
     refresh();
+    
     on_touch();
     
     /*if(getch() != 410)
