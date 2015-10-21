@@ -6,6 +6,9 @@ FLAGS = -g -o
 
 all:position
 
+chocolate:chocolate.o
+	$(CC) -lncurses $(FLAGS) $@ $^ 
+
 position:position.o
 	$(CC) $(FLAGS) $@ $^ 
 

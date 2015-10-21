@@ -227,16 +227,51 @@ int position_dyna_one(int m, int n, int i, int j){
   return solution;
 }
 
+
 void search_for(int m, int n, int eq){
-  int i, j;
-  int res;
+  int res, k,l,o,p;
+  tab = (int****)malloc(sizeof(int***)*m);
+  for(k=0; k<m; k++)
+    {
+      tab[k] = (int***)malloc(sizeof(int**)*n);
+      for(l=0; l<n; l++)
+	{
+	  tab[k][l] = (int**)malloc(sizeof(int*)*m);
+	  for( o=0; o<n;o++)
+	    {
+	      tab[k][l][o] = (int*)malloc(sizeof(int)*n);
+	      for(p=0;p<m;p++){
+		tab[k][l][o][p]=0;
+	      }
+	    }
+	}
+    }
+
   
-  for(i=1;i<m-1;i++){
-    for(j=1;j<n-1;j++){
-	if (tab[m-1][n-1][i][j] == eq) printf("couple (%d, %d) \n",i,j);
+  for(o=0;o<m;o++){
+    for(p=0;p<=n;p++){
+      res = position_dyna(m,n,o,p);
+      if (res==eq){
+	printf("couple ( %d, %d) \n",o+1,p+1);
+      }
     }
   }
   printf("\n");
+
+  
+  for(k=0; k<m; k++)
+    {
+      for(l=0; l<n; l++)
+	{
+	  for( o=0; o<m;o++)
+	    {
+	      free(tab[k][l][o]);    
+	    }
+	  free(tab[k][l]);
+	}
+      free(tab[k]);
+    }
+  free(tab);
 }
 
 int main (int argc, char *argv[]){
