@@ -76,25 +76,42 @@ int position(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     return res;
 }
 
-void init_tab(int m, int n, int eq){
+void init_tab(int m, int n){
   int res, k,l,o,p;
-  tab = (solution ****)malloc(sizeof(solution ***)*m);
+  tab = (solution ****)malloc(sizeof(solution ***)*(m+1));
   for(k=0; k<=m; k++)
     {
-      tab[k] = (solution ***)malloc(sizeof(solution **)*n);
+      tab[k] = (solution ***)malloc(sizeof(solution **)*(n +1));
       for(l=0; l<=n; l++)
 	{
-	  tab[k][l] = (solution**)malloc(sizeof(solution *)*m);
+	  tab[k][l] = (solution**)malloc(sizeof(solution *)*(m + 1));
 	  for( o=0; o<=k;o++)
 	    {
-	      tab[k][l][o] = (solution*)malloc(sizeof(solution)*n);
+	      tab[k][l][o] = (solution*)malloc(sizeof(solution)*(n + 1));
 	      for(p=0;p<=l;p++){
              		tab[k][l][o][p].flag=0;
-		tab[k][l][o][p].val=-1;
+		tab[k][l][o][p].val=-69;
 	      }
 	    }
 	}
     }
+}
+
+void free_tab(int m, int n){
+  int a,b,c;
+
+  for(a=0; a<=m; a++){
+      for(b=0; b<=n; b++)
+	{
+	  for( c=0; c<a;c++)
+	    {
+	      free(tab[a][b][c]);
+	    }
+	  free(tab[a][b]);
+	}
+      free(tab[a]);
+    }
+  free(tab);
 }
 
 int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
@@ -165,11 +182,13 @@ int main (int argc, char *argv[]){
     res = position(3,2,2,0);
     printf("Résultat = %d\n",res);
     t1 = clock();
-    init_tab(100,100,-1);
+    init_tab(100,100);
+
+
     t2 = clock();
         temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps init_tab= %f\n", temps);
-       t1 = clock();
+      t1 = clock();
     xd = position_dynamique(100,100,50,50); printf("Résultat = %d\n",xd);
         t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
@@ -179,6 +198,7 @@ int main (int argc, char *argv[]){
         t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps position_dynamique 100 100 48 52 = %f\n", temps);
+    free_tab(100,100);
     //position_dynamique(100,100,50,50);
     return 0;
 }
