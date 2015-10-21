@@ -90,7 +90,7 @@ void init_tab(int m, int n){
 	      tab[k][l][o] = (solution*)malloc(sizeof(solution)*(n + 1));
 	      for(p=0;p<=l;p++){
              		tab[k][l][o][p].flag=0;
-		tab[k][l][o][p].val=-69;
+		tab[k][l][o][p].val=-69; //( ͡° ͜ʖ ͡°)
 	      }
 	    }
 	}
@@ -120,10 +120,8 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
     res = 0;
     lol = 0;
 //if(m <= 1 || n <= 1 || i <= 1 || j <= 1) printf("%d %d %d %d\n",m,n,i,j);
-assert(i < m);
-assert(i >= 0);
-assert(j < n);
-assert(j >= 0);
+
+
     if(tab[m][n][i][j].flag) {
         return tab[m][n][i][j].val;
     }
@@ -174,17 +172,17 @@ assert(j >= 0);
 
 int main (int argc, char *argv[]){
 
-    int res,xd;
-    float temps;
+    int res,xd,kappa,keepo;
+    double temps;
     clock_t t1, t2;
 
     //res = position(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
     res = position(3,2,2,0);
     printf("Résultat = %d\n",res);
-    t1 = clock();
-    init_tab(100,100);
+    //t1 = clock();
+    init_tab(127,127);
 
-
+/*
     t2 = clock();
         temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps init_tab= %f\n", temps);
@@ -199,6 +197,14 @@ int main (int argc, char *argv[]){
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps position_dynamique 100 100 48 52 = %f\n", temps);
     free_tab(100,100);
-    //position_dynamique(100,100,50,50);
+    //position_dynamique(100,100,50,50);*/
+
+    for(kappa=126;kappa>=0;kappa--) {
+
+        for(keepo=126;keepo>=0;keepo--) {
+            if(position_dynamique(127,127,kappa,keepo) == 127) printf("%d = (%d,%d)\n",kappa*keepo,kappa,keepo);
+        }
+
+    }
     return 0;
 }
