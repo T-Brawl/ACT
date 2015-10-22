@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
+#include <math.h>
 
 #define max(a,b) \
    ({ __typeof__ (a) _a = (a); \
@@ -24,7 +25,11 @@ typedef struct solu_s solution;
 
 static solution ****tab;
 
-int position(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
+double temps;
+clock_t t1, t2;
+int symetrie = 1;
+
+int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     int tmp,res;
     unsigned int cpt,flag;
     res = 0;
@@ -43,9 +48,9 @@ int position(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     for(cpt=1; cpt<m;cpt++){
 
         if(cpt<=i){
-            tmp = position(m-cpt, n, i-cpt,j);
+            tmp = position_naive(m-cpt, n, i-cpt,j);
         }else{
-            tmp = position(cpt, n,i,j);
+            tmp = position_naive(cpt, n,i,j);
         }
 
         if(tmp <= 0) {res = 0; flag = 1;}
@@ -60,9 +65,9 @@ int position(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     for(cpt=1; cpt<n;cpt++){
 
         if(cpt<=j){
-            tmp = position(m, n-cpt, i,j-cpt);
+            tmp = position_naive(m, n-cpt, i,j-cpt);
         }else{
-            tmp = position(m, cpt,i,j);
+            tmp = position_naive(m, cpt,i,j);
         }
 
         if(tmp <= 0) {res = 0; flag = 1;}
@@ -90,7 +95,7 @@ void init_tab(int m, int n){
 	      tab[k][l][o] = (solution*)malloc(sizeof(solution)*(n + 1));
 	      for(p=0;p<=l;p++){
              		tab[k][l][o][p].flag=0;
-		tab[k][l][o][p].val=-69; //( ͡° ͜ʖ ͡°)
+		tab[k][l][o][p].val=0;
 	      }
 	    }
 	}
@@ -116,11 +121,9 @@ void free_tab(int m, int n){
 
 int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     int tmp,res;
-    unsigned int cpt,lol;
+    unsigned int cpt,reset;
     res = 0;
-    lol = 0;
-//if(m <= 1 || n <= 1 || i <= 1 || j <= 1) printf("%d %d %d %d\n",m,n,i,j);
-
+    reset = 0;
 
     if(tab[m][n][i][j].flag) {
         return tab[m][n][i][j].val;
@@ -132,6 +135,16 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
         return tab[1][1][0][0].val;
     }
 
+    if( symetrie && ((i>(m/2)) ||  (j>(n/2))) ) {
+
+        int a,b;
+        a = (i>(m/2))?m-1-i:i;
+        b = (j>(n/2))?n-1-j:j;
+
+        return position_dynamique(m,n,a,b);
+    }
+
+
     for(cpt=1; cpt<m;cpt++){
 
         if(cpt<=i){
@@ -140,8 +153,8 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
             tmp = position_dynamique(cpt, n,i,j);
         }
 
-        if(tmp <= 0) {res = 0; lol= 1;}
-        if(lol) {
+        if(tmp <= 0) {res = 0; reset = 1;}
+        if(reset) {
             if(tmp <= 0) res = res?max(tmp,res):tmp;
         } else {
             res=res?max(tmp,res):tmp;
@@ -157,54 +170,113 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
             tmp = position_dynamique(m, cpt,i,j);
         }
 
-        if(tmp <= 0) {res = 0; lol = 1;}
-        if(lol) {
+        if(tmp <= 0) {res = 0; reset = 1;}
+        if(reset) {
             if(tmp <= 0) res = res?max(tmp,res):tmp;
         } else {
             res=res?max(tmp,res):tmp;
         }
     }
-    if(lol) res = 1-res; else res = -1-res;
+    if(reset) res = 1-res; else res = -1-res;
     tab[m][n][i][j].flag = 1;
     tab[m][n][i][j].val = res;
     return res;
 }
 
+void test(){
+
+int res,i,j;
+
+    t1 = clock();
+    init_tab(100,100);
+    t2 = clock();
+    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    printf("Initialisation du tableau pour les calculs d'une tablette de 100 * 100.\nLe tableau va conetenir tous les position_dynamique(m,n,i,j) tel que\n1<=m<=127, 1<=n<=127, 0<=i<=126 et 0<=j<=126\nTemps de l'initialisation = %f seconde(s)\n\nRemarque : position_dynamique utilise par défaut la symétrie.\n\n",temps);
+
+    printf("position_dynamique(100,100,50,50) = ");
+    t1 = clock();
+    res = position_dynamique(100,100,50,50);
+    t2 = clock();
+    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    printf("%d\nTemps = %f seconde(s)\n\n",res,temps);
+
+
+    free_tab(100,100);
+    init_tab(100,100);
+    printf("On supprime la tablette de chocolat 100 * 100 puis on en crée une autre même taille.\n\n");
+
+    printf("position_dynamique(100,100,48,52) = ");
+    t1 = clock();
+    res = position_dynamique(100,100,48,52);
+    t2 = clock();
+    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    printf("%d\nTemps = %f seconde(s)\n\n",res,temps);
+
+
+    free_tab(100,100);
+    init_tab(127,127);
+    printf("On supprime la tablette de chocolat 100 * 100 puis on en crée un autre de 127 * 127...\n");
+
+    printf("Recherche dans le tableau des couples (i,j) tel que\nposition_dynamique(127,127,i,j) = 127\nRésultat attendu = 4 couples en 3 minutes maximum\n\n");
+    time_t debut,fin;
+    double diff;
+    time(&debut);
+    for(i=0;i<=126;i++) {
+        for(j=0;j<=126;j++) {
+            if(position_dynamique(127,127,i,j) == 127) {
+                    time(&fin);
+                    diff = difftime(fin,debut);
+                    printf("Couple (%d,%d) trouvé\t\t%.0f minutes et %.0f secondes\n",i,j,floor(diff/60),fmod(diff,60));
+            }
+        }
+    }
+    time(&fin);
+    diff = difftime(fin,debut);
+    printf("Temps de la recherche = %.0f minutes et %.0f secondes\n\n",floor(diff/60),fmod(diff,60));
+
+    free_tab(127,127);
+    printf("Destruction de la tablette 127 * 127.\nTravail terminé.\n");
+
+}
+
 int main (int argc, char *argv[]){
 
-    int res,xd,kappa,keepo;
-    double temps;
-    clock_t t1, t2;
+    if(argc==5){
 
-    //res = position(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
-    res = position(3,2,2,0);
-    printf("Résultat = %d\n",res);
-    //t1 = clock();
-    init_tab(127,127);
-
-/*
-    t2 = clock();
+        t1 = clock();
+        int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+        t2 = clock();
         temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("temps init_tab= %f\n", temps);
-      t1 = clock();
-    xd = position_dynamique(100,100,50,50); printf("Résultat = %d\n",xd);
-        t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("temps position_dynamique 100 100 50 50 = %f\n", temps);
-           t1 = clock();
-    xd = position_dynamique(100,100,48,52); printf("Résultat = %d\n",xd);
-        t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("temps position_dynamique 100 100 48 52 = %f\n", temps);
-    free_tab(100,100);
-    //position_dynamique(100,100,50,50);*/
+        printf("position_dynamique avec symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
 
-    for(kappa=126;kappa>=0;kappa--) {
+    } else if (argc==6) {
 
-        for(keepo=126;keepo>=0;keepo--) {
-            if(position_dynamique(127,127,kappa,keepo) == 127) printf("%d = (%d,%d)\n",kappa*keepo,kappa,keepo);
+        if(argv[5][0] == 'n') {
+            t1 = clock();
+            int res = position_naive(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+            t2 = clock();
+            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_naive(%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
         }
 
-    }
+        if(argv[5][0] == 'd') {
+            t1 = clock();
+            symetrie = 0;
+            int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+            t2 = clock();
+            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_dynamique sans symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+        }
+
+        if(argv[5][0] == 'f') {
+            t1 = clock();
+            int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+            t2 = clock();
+            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_dynamique avec symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+        }
+
+    } else test();
+
     return 0;
 }
