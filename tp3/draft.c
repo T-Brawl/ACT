@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <time.h>
 #include <math.h>
 
@@ -41,8 +40,6 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
     *
     */
     flag = 0;
-    assert(i<=m);
-    assert(j<=n);
     if(m == 1 && n == 1) return 0;
 
     for(cpt=1; cpt<m;cpt++){
@@ -119,7 +116,7 @@ void free_tab(int m, int n){
   free(tab);
 }
 
-int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
+int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     int tmp,res;
     unsigned int cpt,reset;
     res = 0;
@@ -141,16 +138,16 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
         a = (i>(m/2))?m-1-i:i;
         b = (j>(n/2))?n-1-j:j;
 
-        return position_dynamique(m,n,a,b);
+        return position_dynamic(m,n,a,b);
     }
 
 
     for(cpt=1; cpt<m;cpt++){
 
         if(cpt<=i){
-            tmp = position_dynamique(m-cpt, n, i-cpt,j);
+            tmp = position_dynamic(m-cpt, n, i-cpt,j);
         }else{
-            tmp = position_dynamique(cpt, n,i,j);
+            tmp = position_dynamic(cpt, n,i,j);
         }
 
         if(tmp <= 0) {res = 0; reset = 1;}
@@ -165,9 +162,9 @@ int position_dynamique(unsigned int m, unsigned int n, unsigned int i, unsigned 
     for(cpt=1; cpt<n;cpt++){
 
         if(cpt<=j){
-            tmp = position_dynamique(m, n-cpt, i,j-cpt);
+            tmp = position_dynamic(m, n-cpt, i,j-cpt);
         }else{
-            tmp = position_dynamique(m, cpt,i,j);
+            tmp = position_dynamic(m, cpt,i,j);
         }
 
         if(tmp <= 0) {res = 0; reset = 1;}
@@ -191,51 +188,51 @@ int res,i,j;
     init_tab(100,100);
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("Initialisation du tableau pour les calculs d'une tablette de 100 * 100.\nLe tableau va conetenir tous les position_dynamique(m,n,i,j) tel que\n1<=m<=127, 1<=n<=127, 0<=i<=126 et 0<=j<=126\nTemps de l'initialisation = %f seconde(s)\n\nRemarque : position_dynamique utilise par défaut la symétrie.\n\n",temps);
+    printf("Initialization of a 4 dimensions array for a 100 * 100 chocolate bar.\nThis array contains all the values of position_dynamic(m,n,i,j) such that\n1 <= m <= 100, 1 <= n <= 100, 0 <= i< m and 0 <= j < n\nInitialization time = %f second(s)\n\nNotice : by default, the function position_dynamic uses symmetric properties of the chocolate bar.\n\n",temps);
 
-    printf("position_dynamique(100,100,50,50) = ");
+    printf("position_dynamic(100,100,50,50) = ");
     t1 = clock();
-    res = position_dynamique(100,100,50,50);
+    res = position_dynamic(100,100,50,50);
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("%d\nTemps = %f seconde(s)\n\n",res,temps);
+    printf("%d\nDuration = %f second(s)\n\n",res,temps);
 
 
     free_tab(100,100);
     init_tab(100,100);
-    printf("On supprime la tablette de chocolat 100 * 100 puis on en crée une autre même taille.\n\n");
+    printf("We destroy the 100 * 100 chocolate bar then we create a fresh new one.\n\n");
 
-    printf("position_dynamique(100,100,48,52) = ");
+    printf("position_dynamic(100,100,48,52) = ");
     t1 = clock();
-    res = position_dynamique(100,100,48,52);
+    res = position_dynamic(100,100,48,52);
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("%d\nTemps = %f seconde(s)\n\n",res,temps);
+    printf("%d\nDuration = %f second(s)\n\n",res,temps);
 
 
     free_tab(100,100);
     init_tab(127,127);
-    printf("On supprime la tablette de chocolat 100 * 100 puis on en crée un autre de 127 * 127...\n");
+    printf("We destroy again the chocolate bar but we make one bigger: 127 * 127 this time...\n");
 
-    printf("Recherche dans le tableau des couples (i,j) tel que\nposition_dynamique(127,127,i,j) = 127\nRésultat attendu = 4 couples en 5 minutes maximum\n\n");
+    printf("Search the array for (i,j) pairs such that\nposition_dynamic(127,127,i,j) = 127\nExpected result = 4 pairs within the next 3-5 minutes\n\n");
     time_t debut,fin;
     double diff;
     time(&debut);
     for(i=0;i<=126;i++) {
         for(j=0;j<=126;j++) {
-            if(position_dynamique(127,127,i,j) == 127) {
+            if(position_dynamic(127,127,i,j) == 127) {
                     time(&fin);
                     diff = difftime(fin,debut);
-                    printf("Couple (%d,%d) trouvé\t\t%.0f minutes et %.0f secondes\n",i,j,floor(diff/60),fmod(diff,60));
+                    printf("Pair (%d,%d) found\t\t%.0f minutes and %.0f seconds\n",i,j,floor(diff/60),fmod(diff,60));
             }
         }
     }
     time(&fin);
     diff = difftime(fin,debut);
-    printf("Temps de la recherche = %.0f minutes et %.0f secondes\n\n",floor(diff/60),fmod(diff,60));
+    printf("Array search time = %.0f minutes and %.0f seconds\n\n",floor(diff/60),fmod(diff,60));
 
     free_tab(127,127);
-    printf("Destruction de la tablette 127 * 127.\nTravail terminé.\n");
+    printf("Destruction of the chocolate bar.\nJob's done.\n");
 
 }
 
@@ -244,10 +241,10 @@ int main (int argc, char *argv[]){
     if(argc==5){
 
         t1 = clock();
-        int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+        int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
         t2 = clock();
         temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-        printf("position_dynamique avec symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+        printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
 
     } else if (argc==6) {
 
@@ -256,24 +253,24 @@ int main (int argc, char *argv[]){
             int res = position_naive(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
             temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_naive(%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            printf("position_naive(%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
         }
 
         if(argv[5][0] == 'd') {
             t1 = clock();
             symetrie = 0;
-            int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+            int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
             temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_dynamique sans symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            printf("position_dynamic without symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
         }
 
         if(argv[5][0] == 'f') {
             t1 = clock();
-            int res = position_dynamique(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+            int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
             temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_dynamique avec symétrie (%d,%d,%d,%d) = %d\nTemps = %f",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
         }
 
     } else test();
