@@ -217,7 +217,7 @@ int res,i,j;
     init_tab(127,127);
     printf("On supprime la tablette de chocolat 100 * 100 puis on en crée un autre de 127 * 127...\n");
 
-    printf("Recherche dans le tableau des couples (i,j) tel que\nposition_dynamique(127,127,i,j) = 127\nRésultat attendu = 4 couples en 3 minutes maximum\n\n");
+    printf("Recherche dans le tableau des couples (i,j) tel que\nposition_dynamique(127,127,i,j) = 127\nRésultat attendu = 4 couples en 5 minutes maximum\n\n");
     time_t debut,fin;
     double diff;
     time(&debut);
