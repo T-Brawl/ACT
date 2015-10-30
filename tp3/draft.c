@@ -26,7 +26,8 @@ static solution ****tab;
 
 double temps;
 clock_t t1, t2;
-int symetrie = 1;
+
+int symmetry = 1;
 
 int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
     int tmp,res;
@@ -122,6 +123,14 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
     res = 0;
     reset = 0;
 
+	/*
+	* Same principle as position_naive but smarter since it saves intermediate
+	* values in a 4 dimensional array. The function checked if the result
+	* for m,n,i and j have been already computed. 
+	*
+	* It also uses the symmetric properties if the integer symmetry is not zero.
+	*/
+
     if(tab[m][n][i][j].flag) {
         return tab[m][n][i][j].val;
     }
@@ -132,7 +141,7 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
         return tab[1][1][0][0].val;
     }
 
-    if( symetrie && ((i>(m/2)) ||  (j>(n/2))) ) {
+    if( symmetry && ((i>(m/2)) ||  (j>(n/2))) ) {
 
         int a,b;
         a = (i>(m/2))?m-1-i:i;
@@ -187,32 +196,34 @@ int res,i,j;
     t1 = clock();
     init_tab(100,100);
     t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    temps = (double)(t2-t1)/CLOCKS_PER_SEC;
     printf("Initialization of a 4 dimensions array for a 100 * 100 chocolate bar.\nThis array contains all the values of position_dynamic(m,n,i,j) such that\n1 <= m <= 100, 1 <= n <= 100, 0 <= i< m and 0 <= j < n\nInitialization time = %f second(s)\n\nNotice : by default, the function position_dynamic uses symmetric properties of the chocolate bar.\n\n",temps);
 
     printf("position_dynamic(100,100,50,50) = ");
+	fflush(stdout);
     t1 = clock();
     res = position_dynamic(100,100,50,50);
     t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    temps = (double)(t2-t1)/CLOCKS_PER_SEC;
     printf("%d\nDuration = %f second(s)\n\n",res,temps);
 
 
     free_tab(100,100);
     init_tab(100,100);
-    printf("We destroy the 100 * 100 chocolate bar then we create a fresh new one.\n\n");
+    printf("We destroy the array then we create a fresh new one.\n\n");
 
     printf("position_dynamic(100,100,48,52) = ");
+	fflush(stdout);
     t1 = clock();
     res = position_dynamic(100,100,48,52);
     t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    temps = (double)(t2-t1)/CLOCKS_PER_SEC;
     printf("%d\nDuration = %f second(s)\n\n",res,temps);
 
 
     free_tab(100,100);
     init_tab(127,127);
-    printf("We destroy again the chocolate bar but we make one bigger: 127 * 127 this time...\n");
+    printf("We destroy again the array but we make one bigger: an array for a 127 * 127 bar this time...\n");
 
     printf("Search the array for (i,j) pairs such that\nposition_dynamic(127,127,i,j) = 127\nExpected result = 4 pairs within the next 3-5 minutes\n\n");
     time_t debut,fin;
@@ -232,7 +243,7 @@ int res,i,j;
     printf("Array search time = %.0f minutes and %.0f seconds\n\n",floor(diff/60),fmod(diff,60));
 
     free_tab(127,127);
-    printf("Destruction of the chocolate bar.\nJob's done.\n");
+    printf("Destruction of the array.\nJob's done.\n");
 
 }
 
@@ -243,8 +254,8 @@ int main (int argc, char *argv[]){
         t1 = clock();
         int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
         t2 = clock();
-        temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-        printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+        temps = (double)(t2-t1)/CLOCKS_PER_SEC;
+        printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
 
     } else if (argc==6) {
 
@@ -252,25 +263,25 @@ int main (int argc, char *argv[]){
             t1 = clock();
             int res = position_naive(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
-            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_naive(%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            temps = (double)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_naive(%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
         }
 
         if(argv[5][0] == 'd') {
             t1 = clock();
-            symetrie = 0;
+            symmetry = 0;
             int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
-            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_dynamic without symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            temps = (double)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_dynamic without symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
         }
 
         if(argv[5][0] == 'f') {
             t1 = clock();
             int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             t2 = clock();
-            temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-            printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),temps);
+            temps = (double)(t2-t1)/CLOCKS_PER_SEC;
+            printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
         }
 
     } else test();
