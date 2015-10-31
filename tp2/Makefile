@@ -1,20 +1,13 @@
-OPTIONS = -W -Wall -Werror -g -Wpedantic -std=c++11
-Link_OPT = -W -Wall -Werror -g -c -Wpedantic -std=c++11
-CC = g++
+OPTIONS = -W  -g 
+Link_OPT = -W -Wall -Werror -g -c -Wpedantic
+CC = gcc
 
-all : svg
+all : main
 
-svg: Svg.cpp Polyline.o Polyline.h PointNode.o PointNode.h Point.o Point.h
-	$(CC) $(OPTIONS) -o svg Svg.cpp Polyline.o PointNode.o Point.o
+main:main.c
+	$(CC) $(OPTIONS) -o main main.c
 
-
-Polyline.o: Polyline.h PointNode.o PointNode.h Point.o Point.h
-
-PointNode.o: PointNode.h Point.o Point.h
-
-Point.o: Point.h
-
-%.o : %.cpp
+%.o : %.c
 	$(CC) $(Link_OPT) $< 
 
 clean:
