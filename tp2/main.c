@@ -104,15 +104,18 @@ void select_point( struct point_s** res, struct point_s** p1, struct point_s** p
     }
   }else if((*p1)->x < (*p2)->x){
     
-      printf("x1<x2\n");
+    printf("x1<x2\n");
+    printf("p2 %d %d\n", (*p2)->x, (*p2)->y);
+    printf("p1 %d %d\n", (*p1)->x, (*p1)->y);
+    printf("res %d %d\n", (*res)->x, (*res)->y);
     try_save(res,p2,p1);
   }else{
     
-      printf("x1>x2\n");
-      printf("p1 %d %d\n", (*p2)->x, (*p2)->y);
-      printf("p1 %d %d\n", (*p1)->x, (*p1)->y);
-      printf("res %d %d\n", (*res)->x, (*res)->y);
-    try_save(res,p1,p2);
+    printf("x1>x2\n");
+    printf("p2 %d %d\n", (*p2)->x, (*p2)->y);
+    printf("p1 %d %d\n", (*p1)->x, (*p1)->y);
+    printf("res %d %d\n", (*res)->x, (*res)->y);
+    try_save(&(*res),&(*p1),&(*p2));
   }
 }
 
@@ -134,7 +137,7 @@ struct point_s* add_point(struct point_s* p,int before, int x, int y){
 }
 
 /*clean fusion between two line*/
-struct point_s* fusion( struct point_s* p1, struct point_s* p2){
+struct point_s* fusion(struct point_s* p1, struct point_s* p2){
   struct point_s* tmp, *res;
   res=NULL;
   printf("fusiiiiiioooooonnnnnnnn\n");
@@ -153,29 +156,24 @@ struct point_s* fusion( struct point_s* p1, struct point_s* p2){
   printf("res x %d  y %d \n  boucle\n",res->x,res->y);
   while(p1!=NULL && p2!= NULL){
       printf("dedans\n");
-      printf("p1 %d %d \np2 %d %d\n",p1->x,p1->y,p2->x,p2->y);
+      printf("dd p1 %d %d \n dd p2 %d %d\n",p1->x,p1->y,p2->x,p2->y);
     select_point(&tmp,&p1,&p2);
   }
-  
+  printf("fin de boucle fusion");
   if(p1==NULL){
       printf("p1 vide\n");
-    if(p2->y!=0){
+    if(p2 !=NULL){
       tmp->next=p2;
       p2->previous=tmp;
-    }else if(p2->next !=NULL){
-      tmp->next=p2->next;
-      p2->next->previous=tmp;
     }
   }else{
       printf("p2 vide\n");
-    if(p1->y!=0){
-      tmp->next=p1;
-      p1->previous=tmp;
-    }else if(p1->next !=NULL){
+    if(p1 !=NULL){
       tmp->next=p1->next;
       p1->next->previous=tmp;
     }
   }
+  printf("return du fusion");
   return res;
 }
 
@@ -248,11 +246,12 @@ int main(int argc, char** argv){
   FILE* ifile;
   FILE* ofile;
   int nb_point;
+  char buff[100];
+  struct point_s* first;
+  first=NULL;
+    
   if(argc!=2){
-    int cpt,nb_point;
-    char buff[100];
-    struct point_s* first;
-    first=NULL;
+    int cpt;
     cpt=1;
     nb_point=0;
     printf("Veuillez renseigner un seul fichier. mode entier direct\n");
@@ -271,51 +270,48 @@ int main(int argc, char** argv){
     pt_to_buff(buff,first, nb_point);
     printf("%s\n",buff);
     
-  }
-  ifile= fopen(argv[1], "r");
-  if(ifile!=NULL){
-    char buff[10];
-    fgets(buff,10,ifile);
-    nb_point= atoi(buff)*2;
-    printf("%d points\n", nb_point);
-  }
-  
-  if(ifile!=NULL){
-    int cpt;
-    struct point_s* first;
-    char buff[100];
-    first=NULL;
-    while (fgets(buff, 100, ifile)){
-      char tmp[3][5];
-      int int1, int2,int3;
-      printf("buff\n%s \n",buff);
-      subdiv(tmp,buff);
-      //tmp[0]= strtok (buff,delim);
-      int1 = atoi(tmp[0]);
-      //tmp[1] = strtok (NULL,delim);
-      int2 = atoi(tmp[1]);
-      //tmp[2] = (NULL,delim);
-      int3 = atoi(tmp[2]);
-      
-      if (cpt<nb_point){
-	first=add_point(first,1,int3,0);
-	cpt++;
-      }
-      if (cpt<nb_point){
-	first=add_point(first,1,int1,int2);
-	cpt++;
-      }
+  }else{
+    ifile= fopen(argv[1], "r");
+    if(ifile!=NULL){
+      char buff[10];
+      fgets(buff,10,ifile);
+      nb_point= atoi(buff)*2;
+      printf("%d points\n", nb_point);
     }
     
-    pt_to_buff(buff,first, nb_point);
-    printf("%s\n",buff);
-    first = resolve(first, nb_point);
-    fclose(ifile);
-  
-    //ofile= fopen("out.svg", "r");
-    
-    pt_to_buff(buff,first, nb_point);
-    printf("%s\n",buff);
-    //fclose(ofile);
+    if(ifile!=NULL){
+      int cpt;
+      while (fgets(buff, 100, ifile)){
+	char tmp[3][5];
+	int int1, int2,int3;
+	printf("buff\n%s \n",buff);
+	subdiv(tmp,buff);
+	//tmp[0]= strtok (buff,delim);
+	int1 = atoi(tmp[0]);
+	//tmp[1] = strtok (NULL,delim);
+	int2 = atoi(tmp[1]);
+	//tmp[2] = (NULL,delim);
+	int3 = atoi(tmp[2]);
+	
+	if (cpt<nb_point){
+	  first=add_point(first,1,int3,0);
+	  cpt++;
+	}
+	if (cpt<nb_point){
+	  first=add_point(first,1,int1,int2);
+	  cpt++;
+	}
+      }
+      
+      pt_to_buff(buff,first, nb_point);
+      printf("%s\n",buff);
+      first = resolve(first, nb_point);
+      fclose(ifile);
+    }
+      //ofile= fopen("out.svg", "r");
+      
+      pt_to_buff(buff,first, nb_point);
+      printf("%s\n",buff);
+      //fclose(ofile);
   }
 }
