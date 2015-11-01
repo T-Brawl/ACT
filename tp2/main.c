@@ -25,27 +25,21 @@ void consume(struct point_s** p){
 }
 
 void try_save( struct point_s** res, struct point_s** ref, struct point_s** p){
-	printf("try save");
   if((*res)->x < (*p)->x){
-    printf("cas1");
     save_point(res,p);
   }else if((*res)->x > (*p)->x){
     if((*ref)->x > (*p)->x){
-      printf("cas2");
       /*in this case, the line of p can't cut the line and create an interssant intersect before the next point)*/
       consume(p);
     }else{
       if((*p)->next->x != (*ref)->x){
 	/*intersect */
-	printf("cas3");
 	*res= add_point(*res,0, (*ref)->x,(*p)->y);
         consume(ref);
       }
-	printf("cas3-2");
       consume(p);
     }
   }else{
-    printf("cas5");
     consume(p);
   }
 }
@@ -59,7 +53,6 @@ void save_point(struct point_s** res, struct point_s** p){
     *res=*p;
     if((*p)->next==NULL){
       *p==NULL;
-      printf("p null \n");
     }else{
       *p=(*p)->next;
       (*res)->next->previous=NULL;
@@ -70,7 +63,6 @@ void save_point(struct point_s** res, struct point_s** p){
 
 void select_point( struct point_s** res, struct point_s** p1, struct point_s** p2){
   if(*res==NULL){
-    printf("first save...");
     if((*p1)->x <(*p2)->x){
       save_point(res,p1);
     }else if((*p1)->x > (*p2)->x){
@@ -83,9 +75,7 @@ void select_point( struct point_s** res, struct point_s** p1, struct point_s** p
     }else{
       save_point(res,p2);
     }
-    printf("first save end...");
   }else if((*p1)->x == (*p2)->x){
-    printf("x==x\n");
     if((*res)->y==(*p1)->y && (*res)->y== (*p2)->y){
       consume(p1);
       save_point(res,p2);
@@ -103,18 +93,8 @@ void select_point( struct point_s** res, struct point_s** p1, struct point_s** p
       }
     }
   }else if((*p1)->x < (*p2)->x){
-    
-    printf("x1<x2\n");
-    printf("p2 %d %d\n", (*p2)->x, (*p2)->y);
-    printf("p1 %d %d\n", (*p1)->x, (*p1)->y);
-    printf("res %d %d\n", (*res)->x, (*res)->y);
     try_save(res,p2,p1);
   }else{
-    
-    printf("x1>x2\n");
-    printf("p2 %d %d\n", (*p2)->x, (*p2)->y);
-    printf("p1 %d %d\n", (*p1)->x, (*p1)->y);
-    printf("res %d %d\n", (*res)->x, (*res)->y);
     try_save(&(*res),&(*p1),&(*p2));
   }
 }
@@ -140,55 +120,35 @@ struct point_s* add_point(struct point_s* p,int before, int x, int y){
 struct point_s* fusion(struct point_s* p1, struct point_s* p2){
   struct point_s* tmp, *res;
   res=NULL;
-  printf("fusiiiiiioooooonnnnnnnn\n");
-  
-  printf("res x %d  y %d \n ",p2->next->x,p2->next->y);
-
-  printf("res x %d  y %d \n ",p2->x,p2->y);
   select_point(&res,&p1,&p2);
-
-  printf("res x %d  y %d \n \n",p2->x,p2->y);
   /*we works on tmp to save the first point in result as res*/
-  if(res==NULL){
-    printf("ça devrait pas être null..\n");
-  }
   tmp=res;
-  printf("res x %d  y %d \n  boucle\n",res->x,res->y);
   while(p1!=NULL && p2!= NULL){
-      printf("dedans\n");
-      printf("dd p1 %d %d \n dd p2 %d %d\n",p1->x,p1->y,p2->x,p2->y);
     select_point(&tmp,&p1,&p2);
   }
-  printf("fin de boucle fusion");
   if(p1==NULL){
-      printf("p1 vide\n");
     if(p2 !=NULL){
       tmp->next=p2;
       p2->previous=tmp;
     }
   }else{
-      printf("p2 vide\n");
     if(p1 !=NULL){
-      tmp->next=p1->next;
-      p1->next->previous=tmp;
+      tmp->next=p1;
+      p1->previous=tmp;
     }
   }
-  printf("return du fusion");
   return res;
 }
 
 /*return a clean line*/
 struct point_s* resolve(struct point_s*p, int length){
-  printf("on resoud %d\n", length);
   if(length==1){
     return p;
   }else if(length==2){
     if(p->x < p->next->x){
-      printf("on resoud 2 dans le cas simple\n");
       /*if the entry file is clean( x y z with x<z) we are in this case*/
       return  p;
     }else{      
-      printf("on resoud 2 dans le cas dur\n");
       p->previous=p->next;
       p->next->next=p;
       p->next=NULL;
@@ -198,7 +158,6 @@ struct point_s* resolve(struct point_s*p, int length){
     /*we cut in 2 sub problems.*/
     struct point_s* tmp1, * tmp2;
     int i,j;
-    printf("on resoud et p est %d %d\n", p->x,p->y);
     j=length/2;
     tmp1 = p;
     tmp2 = p;
@@ -208,9 +167,7 @@ struct point_s* resolve(struct point_s*p, int length){
     tmp2->previous->next=NULL;
     tmp2->previous=NULL;
     tmp1=resolve(tmp1,j);
-      printf("resolu, ça bloque plus haut\n");
     tmp2=resolve(tmp2, length-j);
-      printf("resolu, ça bloque plus haut\n");
     /*fusion of 2 sub problems*/
     return fusion(tmp1, tmp2);
   }
@@ -219,6 +176,11 @@ struct point_s* resolve(struct point_s*p, int length){
 void pt_to_buff(char* buff, struct point_s *p,int length){
   sprintf(buff,"");
   for(int i=0; i<length;i++){
+    if(p->previous!= NULL){
+      sprintf(buff,"%s %d,%d",buff,p->x,p->previous->y);
+    }else if (p->y !=0){
+      sprintf(buff,"%s %d,%d",buff,p->x,0);
+    }
     sprintf(buff,"%s %d,%d",buff,p->x,p->y);
     p=p->next;
   }
@@ -228,23 +190,38 @@ void subdiv(char tmp[3][5],char * buff){
   int tmpcpt,cpt,i;
   i=0;
   cpt=0;
-  tmpcpt;
-  while(buff[i]!=NULL && buff[i]!='\0'){
-    printf("%c // %d %d\n",buff[i],cpt,i);
-    if(buff[i]==' ' || buff[i]=='/' || buff[i]==','){
+  tmpcpt=0;
+  while(tmpcpt<3 && cpt<5){
+    if(buff[i]<48 || buff[i]>57){
+      printf("delim found \n");
+      tmp[tmpcpt][cpt]='\0';
       cpt=0;
       tmpcpt++;
     }else{
+      printf("delim not found \n");
       tmp[tmpcpt][cpt]=buff[i];
       cpt++;
     }
+    printf("tmpbuff %s %s %s\n", tmp[0],tmp[1],tmp[2]);
+    i++;
   }
+}
+
+void write_svg(struct point_s * first, int nb_point){
+  char buff[100];
+  FILE* ofile;
+  ofile= fopen("out.svg", "w+");
+
+  fputs("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"600\" height=\"500\" viewBox=\"0 -150 300 150\"><polyline points=\"", ofile);
+  pt_to_buff(buff,first, nb_point);
+  fputs(buff, ofile);
+  fputs("\" stroke=\"green\" stroke-width=\"0.2\" fill=\"none\" transform=\" scale(10,-10)\" /></svg>", ofile);
+  //fclose(ofile);
 }
 
 /*Only read and write in file. Launch the fonction resolve on the polyline*/
 int main(int argc, char** argv){
   FILE* ifile;
-  FILE* ofile;
   int nb_point;
   char buff[100];
   struct point_s* first;
@@ -266,10 +243,11 @@ int main(int argc, char** argv){
     first = resolve(first, nb_point);
   
     //ofile= fopen("out.svg", "r");
-    
     pt_to_buff(buff,first, nb_point);
-    printf("%s\n",buff);
-    
+    printf("\n\n%s\n",buff);
+    printf("erire dans out.svg \n");
+    write_svg(first, nb_point);
+    return 0;
   }else{
     ifile= fopen(argv[1], "r");
     if(ifile!=NULL){
@@ -294,24 +272,24 @@ int main(int argc, char** argv){
 	int3 = atoi(tmp[2]);
 	
 	if (cpt<nb_point){
-	  first=add_point(first,1,int3,0);
+	  first=add_point(first,1,int1,int2);
+	  
 	  cpt++;
 	}
 	if (cpt<nb_point){
-	  first=add_point(first,1,int1,int2);
+	  first=add_point(first,1,int3,0);
 	  cpt++;
 	}
       }
       
       pt_to_buff(buff,first, nb_point);
-      printf("%s\n",buff);
+      printf("\n%s\n",buff);
       first = resolve(first, nb_point);
-      fclose(ifile);
+      write_svg(first, nb_point);
+      //fclose(ifile);
     }
-      //ofile= fopen("out.svg", "r");
-      
-      pt_to_buff(buff,first, nb_point);
-      printf("%s\n",buff);
-      //fclose(ofile);
+    
+    
   }
+  
 }
