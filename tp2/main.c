@@ -15,18 +15,22 @@ void save_point(struct point_s** res, struct point_s** p);
 
 void consume(struct point_s** p){
   if((*p)->next==NULL){
-    free(*p);
+    //free(*p);
     *p=NULL;
   }else{
     *p=(*p)->next;
-    free((*p)->previous);
-    (*p)->previous=NULL;
+    //free((*p)->previous);
+    //(*p)->previous=NULL;
   }
 }
 
 void try_save( struct point_s** res, struct point_s** ref, struct point_s** p){
   if((*res)->x < (*p)->x){
-    save_point(res,p);
+    if((*ref)->previous!=NULL &&((*ref)->previous->y < (*p)->y ||(*ref)->y < (*p)->y)){
+      save_point(res,p);
+    }else{
+      consume(p);
+    }
   }else if((*res)->x > (*p)->x){
     if((*ref)->x > (*p)->x){
       /*in this case, the line of p can't cut the line and create an interssant intersect before the next point)*/
@@ -45,18 +49,25 @@ void try_save( struct point_s** res, struct point_s** ref, struct point_s** p){
 }
 
 void save_point(struct point_s** res, struct point_s** p){
+  struct point_s* tmp;
+  tmp= (struct point_s*)malloc(sizeof(struct point_s));
+  //printf("---- %d %d \n",(*p)->x , (*p)->y);
+  tmp->x= (*p)->x;
+  tmp->y= (*p)->y;
+  tmp->next=NULL;
   if(*res==NULL){
-    *res=*p;
+    *res=tmp;
+    tmp->previous=NULL;
   }else{
-    (*res)->next=*p;
-    (*p)->previous=*res;
-    *res=*p;
+    (*res)->next=tmp;
+    tmp->previous=*res;
+    *res=tmp;
     if((*p)->next==NULL){
       *p==NULL;
     }else{
       *p=(*p)->next;
-      (*res)->next->previous=NULL;
-      (*res)->next=NULL;
+      //(*res)->next->previous=NULL;
+      //(*res)->next=NULL;
     }
   }
 }
@@ -79,16 +90,24 @@ void select_point( struct point_s** res, struct point_s** p1, struct point_s** p
     if((*res)->y==(*p1)->y && (*res)->y== (*p2)->y){
       consume(p1);
       save_point(res,p2);
-    }else if((*p1)->y > (*res)->y){
+    }else if((*p1)->y > (*res)->y || (*p2)->y > (*res)->y){
+      printf(" %d %d \n",(*p1)->y , (*p2)->y);
       if((*p1)->y > (*p2)->y){
+	printf(" *%d %d \n",(*p1)->y , (*p2)->y);
+	consume(p2);
 	save_point(res,p1);
       }else{
+	printf(" %d *%d \n",(*p1)->y , (*p2)->y);
+
+	consume(p1);
 	save_point(res,p2);
       }
     }else{
       if((*p1)->y < (*p2)->y){
+	consume(p2);
 	save_point(res,p1);
       }else{
+	consume(p1);
 	save_point(res,p2);
       }
     }
@@ -148,11 +167,14 @@ struct point_s* resolve(struct point_s*p, int length){
     if(p->x < p->next->x){
       /*if the entry file is clean( x y z with x<z) we are in this case*/
       return  p;
-    }else{      
-      p->previous=p->next;
-      p->next->next=p;
-      p->next=NULL;
-      return p->previous;
+    }else{
+      if(p->x >p->next->y){
+	p->next=NULL;
+	return p;
+      }else{
+	p->next->previous=NULL;
+	return p->next;
+      }
     }
   }else{
     /*we cut in 2 sub problems.*/
@@ -175,13 +197,13 @@ struct point_s* resolve(struct point_s*p, int length){
 
 void pt_to_buff(char* buff, struct point_s *p,int length){
   sprintf(buff,"");
-  for(int i=0; i<length;i++){
+  while(p!=NULL){
     if(p->previous!= NULL){
       sprintf(buff,"%s %d,%d",buff,p->x,p->previous->y);
     }else if (p->y !=0){
       sprintf(buff,"%s %d,%d",buff,p->x,0);
     }
-    sprintf(buff,"%s %d,%d",buff,p->x,p->y);
+    sprintf(buff,"%s (%d,%d)",buff,p->x,p->y);
     p=p->next;
   }
 }
@@ -233,9 +255,13 @@ int main(int argc, char** argv){
     nb_point=0;
     printf("Veuillez renseigner un seul fichier. mode entier direct\n");
     while(cpt<argc-2){
+      int int1, int2, int3;
       nb_point+=2;
-      first=add_point(first,1,atoi(argv[cpt++]),atoi(argv[cpt++]));      
-      first=add_point(first,1,atoi(argv[cpt++]),0);
+      int1=atoi(argv[cpt++]);
+      int2=atoi(argv[cpt++]);
+      int3=atoi(argv[cpt++]);
+      first=add_point(first,1,int3,0);
+      first=add_point(first,1,int1,int2);
     }
 
     pt_to_buff(buff,first, nb_point);
