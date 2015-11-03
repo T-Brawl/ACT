@@ -9,21 +9,72 @@ QUESTIONS
 1.
 
 
-		+3
-	________||____
-       ||	||  ||
-       +1	-2  ||
+    +3
+  ________||____
+       || ||  ||
+       +1 -2  ||
        ||______/  \ ||
-       ||   ||	   \||
-       ||   +1	    +1     
+       ||   ||     \||
+       ||   +1      +1     
        ||___||______||
-		||
-		+0
+    ||
+    +0
 
 2.
 pour x la valeur de la position calculée et yi le ieme successeur
 x = -(max(yi) + 1), si pour tout yi, yi > 0
 x = -(max(yi<= 0)) + 1 s'il existe un yi <= 0
+
+
+3.
+position_naive(10,7,5,3) = 15
+Time = 4.368000 seconds
+
+position_naive(10,7,7,3) = 11
+Time = 2.076000 seconds
+
+
+La différence de temps (au simple au double) s'explique par le nombre de récursions à effectuer. En effet si un joueur peut gagner, il va écourter au maximum le jeu et donc diminuer le nombre de récursions.
+
+
+4.
+position_dynamic without symmetry (100,100,50,50) = -198
+Time = 20.930000 seconds
+
+position_dynamic without symmetry (100,100,48,52) = 191
+Time = 19.130000 seconds
+
+
+5.
+
+position_dynamic using symmetry (127,127,0,63) = 127
+Time = 1.198000 seconds
+
+position_dynamic using symmetry (127,127,63,0) = 127
+Time = 1.770000 seconds
+
+position_dynamic using symmetry (127,127,63,126) = 127
+Time = 1.790000 seconds
+
+position_dynamic using symmetry (127,127,126,63) = 127
+Time = 1.402000 seconds
+
+6.
+
+Soient m et n la taille de la tablette au départ, i et j les coordonnées
+
+C(m,n,i,j) = O(1) si la valeur est déjà dans le tableau
+C(m,n,i,j) = (n + m) appels récursifs sur des problèmes plus petits qui représentent toutes les façons possibles de couper la plaque.
+
+L'arbre des choix possibles pour casser la plaque aux différentes étapes est exponentiel.
+
+7.
+Elles ont la même solution car c'est la même plaque à une rotation et une homothétie près.
+
+8.
+on peut exploiter ça en disant i toujours supérieur à j sinon on inverse i et j 
+puis si i>m/2 alors on fait une symétrie axiale
+puis si j>n/2 alors on fait une symétrie axiale
 
 ---------------------------------------
 
