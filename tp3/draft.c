@@ -150,13 +150,20 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
         return tab[1][1][0][0].val;
     }
 
-    if( symmetry && ((i>(m/2)) ||  (j>(n/2))) ) {
+    if( symmetry && ( (i>(m/2)) || (j>(n/2)) || ( m<n ) ) ) {
 
-        int a,b;
-        a = (i>(m/2))?m-1-i:i;
-        b = (j>(n/2))?n-1-j:j;
+        int a,b,c,d;
 
-        return position_dynamic(m,n,a,b);
+        int cmp=m<n; //Storing the value for once instead of comparing every time
+
+        a = cmp?n:m;
+        b = cmp?m:n;
+        c = cmp?j:i;
+        d = cmp?i:j;
+        c = (c>(a/2))?a-1-c:c;
+        d = (d>(b/2))?b-1-d:d;
+
+        return position_dynamic(a,b,c,d);
     }
 
     //Testing all the possibilities cutting crosswise
@@ -235,7 +242,7 @@ int res,i,j;
     init_tab(127,127);
     printf("We destroy again the array but we make one bigger: an array for a 127 * 127 bar this time...\n");
 
-    printf("Search the array for (i,j) pairs such that\nposition_dynamic(127,127,i,j) = 127\nExpected result = 4 pairs within the next 3-5 minutes\n\n");
+    printf("Search the array for (i,j) pairs such that\nposition_dynamic(127,127,i,j) = 127\nExpected result = 4 pairs within the next 1-3 minutes\n\n");
     time_t debut,fin;
     double diff;
     time(&debut);
