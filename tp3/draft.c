@@ -43,6 +43,7 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
     flag = 0;
     if(m == 1 && n == 1) return 0;
 
+    //Testing all the possibilities cutting crosswise
     for(cpt=1; cpt<m;cpt++){
 
         if(cpt<=i){
@@ -60,6 +61,7 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
 
     }
 
+    //Testing all the possibilities cutting lengthwise
     for(cpt=1; cpt<n;cpt++){
 
         if(cpt<=j){
@@ -79,6 +81,14 @@ int position_naive(unsigned int m, unsigned int n, unsigned int i, unsigned int 
     return res;
 }
 
+
+/*
+ * Initialization of the structure that will hold all the results. The (i,j,k,l) cell
+ * will contain the value for position(i,j,k,l)
+ * Instead of a full 4D array, it's smarter to only allocate space for relevant values.
+ * For example, position(10,10,15,56) is not possible because the death square would
+ * be out of the chocolate bar.
+ */
 void init_tab(int m, int n){
   int res, k,l,o,p;
   tab = (solution ****)malloc(sizeof(solution ***)*(m+1));
@@ -92,8 +102,8 @@ void init_tab(int m, int n){
 	    {
 	      tab[k][l][o] = (solution*)malloc(sizeof(solution)*(n + 1));
 	      for(p=0;p<=l;p++){
-             		tab[k][l][o][p].flag=0;
-		tab[k][l][o][p].val=0;
+                tab[k][l][o][p].flag=0;
+                tab[k][l][o][p].val=0;
 	      }
 	    }
 	}
@@ -103,18 +113,17 @@ void init_tab(int m, int n){
 void free_tab(int m, int n){
   int a,b,c;
 
-  for(a=0; a<=m; a++){
-      for(b=0; b<=n; b++)
-	{
-	  for( c=0; c<a;c++)
-	    {
-	      free(tab[a][b][c]);
-	    }
-	  free(tab[a][b]);
-	}
-      free(tab[a]);
+    for(a=0; a<=m; a++){
+        for(b=0; b<=n; b++){
+            for(c=0; c<a;c++) {
+                free(tab[a][b][c]);
+            }
+            free(tab[a][b]);
+        }
+    free(tab[a]);
     }
-  free(tab);
+
+    free(tab);
 }
 
 int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned int j){
@@ -126,7 +135,7 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
 	/*
 	* Same principle as position_naive but smarter since it saves intermediate
 	* values in a 4 dimensional array. The function checked if the result
-	* for m,n,i and j have been already computed. 
+	* for m,n,i and j have been already computed. That is the case when the flag is not zero.
 	*
 	* It also uses the symmetric properties if the integer symmetry is not zero.
 	*/
@@ -150,7 +159,7 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
         return position_dynamic(m,n,a,b);
     }
 
-
+    //Testing all the possibilities cutting crosswise
     for(cpt=1; cpt<m;cpt++){
 
         if(cpt<=i){
@@ -168,6 +177,7 @@ int position_dynamic(unsigned int m, unsigned int n, unsigned int i, unsigned in
 
     }
 
+    //Testing all the possibilities cutting lengthwise
     for(cpt=1; cpt<n;cpt++){
 
         if(cpt<=j){
@@ -251,13 +261,17 @@ int main (int argc, char *argv[]){
 
     if(argc==5){
 
+        init_tab(atoi(argv[1]),atoi(argv[2]));
         t1 = clock();
         int res = position_dynamic(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
         t2 = clock();
         temps = (double)(t2-t1)/CLOCKS_PER_SEC;
         printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
+        free_tab(atoi(argv[1]),atoi(argv[2]));
 
     } else if (argc==6) {
+
+        init_tab(atoi(argv[1]),atoi(argv[2]));
 
         if(argv[5][0] == 'n') {
             t1 = clock();
@@ -283,6 +297,8 @@ int main (int argc, char *argv[]){
             temps = (double)(t2-t1)/CLOCKS_PER_SEC;
             printf("position_dynamic using symmetry (%d,%d,%d,%d) = %d\nTime = %f seconds",atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]),res,temps);
         }
+
+        free_tab(atoi(argv[1]),atoi(argv[2]));
 
     } else test();
 
