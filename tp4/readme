@@ -1,0 +1,77 @@
+question 1)
+
+Un certificat est une représentation de la solution au problème
+La structure du certificat doit pouvoir l'ensemble des solution au problème
+
+on doit visiter les villes une et une seule fois donc on peut présenter le certificat sous la forme d'un tableau t de longueur n
+
+A|C|B|D
+
+taille du certificat : n
+
+valeur de la lettre
+A=0
+B=1
+C=2
+D=3
+
+algo
+on crée un tableau passe de longueur n de valeur 0
+on crée un entier somme =0
+pour chaque case i du certificat
+    si la case passe[c[i]] ==1
+        retour faux
+    sinon la case passe[c[i]]
+        somme += distance enter c[i] et c[(i+1)modulo n]
+        passe[c[i]]=1
+fin pour
+si somme<= max autorisé
+    retourne vrai
+sinon
+    retourne faux
+
+
+complexité une boucle en n avec 2 test  et un test d'égalité aprés
+O(n)=n
+
+
+question 2.1
+
+algo de génération c:
+    on crée un tableau tab de longueur n
+    pour i allant de 0 a n-1
+        tab[i]=i (en supposant que les ville soit représenter par un int)
+    fin pour
+    Math.shuffle(tab)
+    retourne tab
+fin algo
+
+On fait confiance a la bibliotheque de random pour l'équiprobabilité. Donc on peut dire que notre algo permet à tous les certificats ont la même probabilité d'apparaitre.
+
+question 2.2
+algo_solu_np(n,m,distance_max)
+    test=faux
+    tant que test != vrai
+        res=algo_gene_c(n);
+        test=algo_verif_certificat(res,m, distancemax)
+    fin tant que
+    retourne res
+
+question 3.1
+n!
+
+question3.2
+ordre numérique en associant toujours une lettre un entier (A=0, B=1, C=2.......) :
+ABCD
+ABDC
+ACBD
+.
+.
+.
+
+
+question 3.3
+Il suffit de tester tous les certificats dans l'ordre jusqu'a en trouver un bon.
+complexité une boucle n! dans laquelle on fait une vérification en n
+ 
+donc O(n)=n!*n
