@@ -21,7 +21,6 @@ public abstract class NP extends ExpTime{
 		}
 		return this.estCorrect(c);
     }
-
 	
 //algo non deterministe  polynomial:
 //si il existe une solution AU MOINS UNE execution retourne Vrai
@@ -30,6 +29,15 @@ public abstract class NP extends ExpTime{
 		Certificat c = this.cert();
 		c.alea();
 		return this.estCorrect(c);
+    }
+	
+//Soit vrai un jour, soit jamais faux...	
+	public boolean aUneSolutionBogo() {
+		Certificat c = this.cert();
+		while(!this.estCorrect(c)){
+			c.alea();
+		}
+		return true;
     }
 }
  

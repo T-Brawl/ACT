@@ -39,6 +39,7 @@ public class CertificatTSP implements Certificat{
 	}
 
 	public void alea() {
+		
 		Random dice = new Random();
 		
 		for (int i=0; i<villes.length; i++) {
@@ -56,8 +57,8 @@ public class CertificatTSP implements Certificat{
 	}
 
 	public boolean estDernier() {
-		for(int i=0; villes.length>i;i++){
-			if(villes[i]!=(villes.length-(i+1))){
+		for(int i=0; villes.length-1>i;i++){
+			if(villes[i]<=villes[i+1]){
 				return false;
 			}
 		}
@@ -66,30 +67,21 @@ public class CertificatTSP implements Certificat{
 
 	public void suivant() {
 		
-	    // Find longest non-increasing suffix
+	    if (estDernier()) return;
+	    
 	    int i = villes.length - 1;
 	    while (i > 0 && villes[i - 1] >= villes[i])
 	        i--;
-	    // Now i is the head index of the suffix
 	    
-	    // Are we at the last permutation already?
-	    if (i <= 0)
-	        return;
-	    
-	    // Let array[i - 1] be the pivot
-	    // Find rightmost element that exceeds the pivot
 	    int j = villes.length - 1;
 	    while (villes[j] <= villes[i - 1])
 	        j--;
-	    // Now the value array[j] will become the new pivot
-	    // Assertion: j >= i
 	    
-	    // Swap the pivot with j
 	    int tmp = villes[i - 1];
 	    villes[i - 1] = villes[j];
 	    villes[j] = tmp;
 	    
-	    // Reverse the suffix
+
 	    j = villes.length - 1;
 	    while (i < j) {
 	        tmp = villes[i];
@@ -101,11 +93,11 @@ public class CertificatTSP implements Certificat{
 		
 	}
 	
-	private boolean isInvalid(){
-		boolean[] tmp= new boolean[villes.length];
-		int i;
-		for(i=0; villes.length>i;i++){
-			tmp[i]=false;
+	public boolean isInvalid(){
+		boolean[] tmp = new boolean[villes.length];
+		int i,init;
+		for(init=0; villes.length>init;init++){
+			tmp[init]=false;
 		}
 		for(i=0; villes.length>i;i++){
 			if(tmp[villes[i]]){
@@ -117,12 +109,12 @@ public class CertificatTSP implements Certificat{
 	}
 	
 	public static void main(String[] arg) {
-		System.out.println("Affichage de tous les certificats pour 5 villes");
-		CertificatTSP tsp = new CertificatTSP(new TSP(5,null,0));
+		int nb = Integer.parseInt(arg[0]);
+		System.out.println("Affichage de tous les certificats pour "+nb+" villes");
+		CertificatTSP tsp = new CertificatTSP(new TSP(nb,null,0));
 		int cpt=0;
-		while(!tsp.estDernier())  {tsp.display(); cpt++; tsp.suivant();}
-		tsp.display();
-		cpt++;
+		while(!tsp.estDernier()) {tsp.display(); cpt++; tsp.suivant();}
+		tsp.display(); cpt++;
 		System.out.println(cpt+" certificats possibles");
 	}
 	

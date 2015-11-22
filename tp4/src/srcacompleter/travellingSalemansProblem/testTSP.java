@@ -8,7 +8,7 @@ public class testTSP{
 public static void main(String[] arg) throws Exception {
  	//saisie du probleme
 	if (arg.length < 3)
-	    System.out.println("java testTSP  mode file.atsp lg");
+	    System.out.println("java testTSP mode file.atsp lg");
 	else {
     int lg=Integer.parseInt(arg[2]);	
     //le probleme dans un fichier de donnees
@@ -19,7 +19,7 @@ public static void main(String[] arg) throws Exception {
     for (int i=0; i<4; i++) donnee.nextLine();
     int D[][]=new int[nbv][nbv];
     for (int i=0; i<nbv; i++){
-       for (int j=0; j<nbv; j++) {D[i][j]= donnee.nextInt();System.out.println(D[i][j]+" ");}
+       for (int j=0; j<nbv; j++) {D[i][j]= donnee.nextInt();System.out.print(D[i][j]+" ");}
        System.out.println();}
     TSP pb=new TSP(nbv,D,lg);
     System.out.println(arg[0]);
@@ -36,6 +36,9 @@ public static void main(String[] arg) throws Exception {
         }
     else if (arg[0].equals("-exhaust"))  { 
     	System.out.println("le probleme a-t-il une solution?: ");System.out.println(pb.aUneSolution());
+    	}
+    else if (arg[0].equals("-bogo"))  { 
+    	System.out.println("le probleme a-t-il une solution (bogo mode)?: ");System.out.println(pb.aUneSolutionBogo());
     	}
     else
     	System.out.println("erreur de mode");
