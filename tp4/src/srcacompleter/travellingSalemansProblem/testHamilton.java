@@ -34,6 +34,7 @@ public class testHamilton {
 				}
 				System.out.print("\n");
 			}
+			
 			NP pb;
 			if (arg[0].equals("-cycle")) {
 				pb = new HamiltonCycleRed(nbv, D);
@@ -43,6 +44,7 @@ public class testHamilton {
 				System.out.println("erreur d'option, veuillez choisir entre les options -cycle ou -path");
 				return;
 			}
+			
 			System.out.println(arg[0]+" "+arg[1]);
 			// les differents modes
 			if (arg[1].equals("-verif")) {
@@ -54,9 +56,9 @@ public class testHamilton {
 			} else if (arg[1].equals("-nondet")) {
 				System.out.println(pb.aUneSolutionNonDeterministe());
 			} else if (arg[1].equals("-exhaust")) {
-				System.out.println("le probleme a-t-il une solution?: ");System.out.println(pb.aUneSolution());
+				System.out.println("le probleme a-t-il une solution? :\n"+pb.aUneSolution());
 			} else if (arg[1].equals("-bogo")) {
-				System.out.println("le probleme a-t-il une solution (bogo mode)?: ");System.out.println(pb.aUneSolutionBogo());
+				System.out.println("le probleme a-t-il une solution (bogo mode)? :\n"+pb.aUneSolutionBogo());
 			} else {
 				System.out.println("erreur de mode");
 			}
