@@ -6,7 +6,10 @@ abstract public NP red();
 
 public Certificat cert() {return red().cert();}
 
-public boolean estCorrect(Certificat cert) {//A COMPLETER
-    ;}
+@Override
+public boolean estCorrect(Certificat cert) {
+	return red().estCorrect(cert);
+}
+
 
 }

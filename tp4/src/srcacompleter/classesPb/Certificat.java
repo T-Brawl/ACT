@@ -2,6 +2,8 @@ package classesPb;
 
 public interface Certificat {
 
+	int[] villes = null;
+
 	//saisie au clavier de la valeur du certificat
 	public void saisie();
 	
@@ -23,4 +25,6 @@ public interface Certificat {
 	//modifie la valeur du certificat en la suivante pour l'ordre
 	//comportement non defini si la certificat est le dernier
 	public void suivant();
+
+	public int get(int i);
 }
