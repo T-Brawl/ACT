@@ -2,8 +2,6 @@ package classesPb;
 
 public interface Certificat {
 
-	int[] villes = null;
-
 	//saisie au clavier de la valeur du certificat
 	public void saisie();
 	
