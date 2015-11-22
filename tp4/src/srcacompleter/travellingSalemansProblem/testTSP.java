@@ -30,7 +30,8 @@ public static void main(String[] arg) throws Exception {
 				}
 			System.out.println();
 		}
-    
+		
+		donnee.close();
 		TSP pb = new TSP(nbv,D,lg);
 		
 		System.out.println(arg[0]);

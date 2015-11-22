@@ -17,11 +17,13 @@ public class CertificatTSP implements Certificat{
 	}
 
 	public void saisie() {
+		Scanner sc = new Scanner(System.in);
 		for (int i=0; i<villes.length; i++) {
-			Scanner sc = new Scanner(System.in);
 			System.out.println("Veuillez saisir une ville :");
 			villes[i]= Integer.parseInt(sc.nextLine());
+			
 		}
+		sc.close();
 		if(isInvalid())
 			System.out.println("Certificat invalide. Ne saisissez une ville qu'une fois !");
 		else saisie();

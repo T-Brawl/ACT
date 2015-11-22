@@ -34,6 +34,7 @@ public class testHamilton {
 				}
 				System.out.print("\n");
 			}
+			donnee.close();
 			
 			NP pb;
 			if (arg[0].equals("-cycle")) {
