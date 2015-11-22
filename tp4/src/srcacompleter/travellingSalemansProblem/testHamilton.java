@@ -51,8 +51,7 @@ public class testHamilton {
 				Certificat c = pb.cert();
 				System.out.print("Proposez un certificat;");
 				c.saisie();
-				System.out.print("votre certificat est-il correct? ");
-				System.out.println(pb.estCorrect(c));
+				System.out.print("votre certificat est-il correct? :\n"+pb.estCorrect(c));
 			} else if (arg[1].equals("-nondet")) {
 				System.out.println(pb.aUneSolutionNonDeterministe());
 			} else if (arg[1].equals("-exhaust")) {
