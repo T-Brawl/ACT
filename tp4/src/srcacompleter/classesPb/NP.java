@@ -14,7 +14,7 @@ public abstract class NP extends ExpTime{
 //algo exponentiel de decision de la propriete basee sur l'enumeration
 // NP est inclus dans EXPTime	
 	public boolean aUneSolution() {
-		Certificat c= this.cert();
+		Certificat c = this.cert();
 		while(!c.estDernier()){
 			if(this.estCorrect(c)) return true;
 			c.suivant();

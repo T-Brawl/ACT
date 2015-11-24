@@ -26,9 +26,7 @@ public static void main(String[] arg) throws Exception {
 		for (int i=0; i<nbv; i++){
 			for (int j=0; j<nbv; j++) {
 				D[i][j]= donnee.nextInt();
-				System.out.print(D[i][j]+" ");
-				}
-			System.out.println();
+			}
 		}
 		
 		donnee.close();

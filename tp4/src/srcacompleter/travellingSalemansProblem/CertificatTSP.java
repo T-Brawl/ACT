@@ -21,12 +21,12 @@ public class CertificatTSP implements Certificat{
 		for (int i=0; i<villes.length; i++) {
 			System.out.println("Veuillez saisir une ville :");
 			villes[i]= Integer.parseInt(sc.nextLine());
-			
 		}
 		sc.close();
-		if(isInvalid())
+		if(isInvalid()) {
 			System.out.println("Certificat invalide. Ne saisissez une ville qu'une fois !");
-		else saisie();
+			saisie();
+		}
 	}
 
 	public void display() {

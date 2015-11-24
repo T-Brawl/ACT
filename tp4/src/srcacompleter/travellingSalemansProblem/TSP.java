@@ -20,6 +20,7 @@ public class TSP extends NP{
 		int res=0;
 		for(int i = 0;i < nbVilles;i++){
 			res += distances[c.get(i)][c.get((i+1)%nbVilles)];
+			if(res > longueurTournee) return false;
 		}
 		return res <= longueurTournee;
 	}

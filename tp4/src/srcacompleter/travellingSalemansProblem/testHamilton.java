@@ -8,9 +8,6 @@ import classesPb.NP;
 
 public class testHamilton {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] arg) throws Exception {
 		// saisie du probleme
 		if (arg.length < 3) {
@@ -30,9 +27,7 @@ public class testHamilton {
 			for (int i = 0; i < nbv; i++) {
 				for (int j = 0; j < nbv; j++) {
 					D[i][j] = donnee.nextBoolean();
-					System.out.print(D[i][j]+" ");
 				}
-				System.out.print("\n");
 			}
 			donnee.close();
 			
