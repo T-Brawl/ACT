@@ -1,77 +1,107 @@
-question 1)
+TP 3 - La classe NP
 
-Un certificat est une représentation de la solution au problème
-La structure du certificat doit pouvoir l'ensemble des solution au problème
+AUTEURS : MOEVI Alexandre - LESAGE Yann
 
-on doit visiter les villes une et une seule fois donc on peut présenter le certificat sous la forme d'un tableau t de longueur n
+---------------------------------------
 
-A|C|B|D
+1 - La propriété est NP
 
-taille du certificat : n
+Un certificat est une représentation de la solution au problème, sa vérification doit être en temps polynomial.
+La structure du certificat doit pouvoir l'ensemble des solutions au problème.
 
-valeur de la lettre
-A=0
-B=1
-C=2
-D=3
+Pour l'implémentation, comme on doit visiter toutes les villes une et une seule fois, on peut présenter le certificat sous la forme d'un tableau de longueur n (n étant le nombre de villes dans le problème). Les villes sont codées par des entiers (de 0 à n-1) et une ville ne peut apparaître qu'une fois. Tous les certificats pour un n fixé correspondent donc à toutes les permutations possibles [0..n-1], donc tous les chemins possibles entre les n villes distinctes.
 
-algo
-on crée un tableau passe de longueur n de valeur 0
-on crée un entier somme =0
-pour chaque case i du certificat
-    si la case passe[c[i]] ==1
-        retour faux
-    sinon la case passe[c[i]]
-        somme += distance enter c[i] et c[(i+1)modulo n]
-        passe[c[i]]=1
+La taille du certificat est proportionnelle polynômialement par rapport à la talle de l’entrée, ici deux entiers et une matrice de taille n x n.
+
+Algorithme de vérification en temps linéaire (une boucle pour sur n villes distinctes), donc en temps polynomial.
+
+somme = 0
+pour chaque ville i du certificat c // |c| = n
+    somme += distance entre D[c[i]] et D[c[(i+1)modulo n]] //D étant la matrice des distances
+    si somme > longueurAutorisee retourne faux
 fin pour
-si somme<= max autorisé
-    retourne vrai
-sinon
-    retourne faux
+retourne somme <= longueurAutorisee
 
+------------------------------
 
-complexité une boucle en n avec 2 test  et un test d'égalité aprés
-O(n)=n
+2.1 - Génération aléatoire d’un certificat
 
+int tab[n]
+pour i allant de 0 a n-1
+    tab[i] = i 
+fin pour
+pour i allant de 0 a n-1
+    échange de tab[i] avec tab[random]
+fin pour
+retourne tab
 
-question 2.1
+On fait confiance a la bibliotheque de random pour l'équiprobabilité des échanges. Donc on peut dire que notre algorihme permet à tous les certificats ont la même probabilité d'apparaître.
 
-algo de génération c:
-    on crée un tableau tab de longueur n
-    pour i allant de 0 a n-1
-        tab[i]=i (en supposant que les ville soit représenter par un int)
-    fin pour
-    Math.shuffle(tab)
-    retourne tab
-fin algo
+------------------------------
 
-On fait confiance a la bibliotheque de random pour l'équiprobabilité. Donc on peut dire que notre algo permet à tous les certificats ont la même probabilité d'apparaitre.
+2.2 - Une solution est de générer un certificat aléatoire et de le vérifier.
 
-question 2.2
-algo_solu_np(n,m,distance_max)
-    test=faux
-    tant que test != vrai
-        res=algo_gene_c(n);
-        test=algo_verif_certificat(res,m, distancemax)
-    fin tant que
-    retourne res
+------------------------------
 
-question 3.1
-n!
+3.1 - Avec n villes, le certificat peut prendre n! valeurs sans répétition de villes, n^n avec répétititon.
 
-question3.2
-ordre numérique en associant toujours une lettre un entier (A=0, B=1, C=2.......) :
-ABCD
-ABDC
-ACBD
-.
-.
-.
+------------------------------
 
+3.2 - Enumération de tous les certificats
 
-question 3.3
-Il suffit de tester tous les certificats dans l'ordre jusqu'a en trouver un bon.
-complexité une boucle n! dans laquelle on fait une vérification en n
- 
-donc O(n)=n!*n
+Pour énumérer les certificats, nous avons décidé de suivre l'ordre numérique. Pour 5 villes, le premier certificat sera 0-1-2-3-4 et le dernier sera 4-3-2-1-0.
+
+------------------------------
+
+3.3 - L’algorithme du British Museum
+
+Il suffit de tester tous les certificats dans l'ordre en commençant par le premier. Soit on trouve un certificat valide, soit le problème n'a pas de solution.
+IL s'agit d'une boucle de taille n! (dans le pire des cas) dans laquelle on fait une vérification en n. Donc O(n) = n!*n, soit environ O(n^(n+1)).
+
+------------------------------
+
+4.1 - HamiltonCycle ≤ TSP
+
+On peut transformer HamiltonCycle en TSP en suivant le codage suivant.
+
+    nombre de sommets => nombre de villes
+    nombre de sommets => longueur de la tournee
+    matrices d'arêtes (True si elle existe, False sinon) => matrices de distance (1 s'il est possible de relier deux villes, distance éliminatoire sinon)
+
+------------------------------
+
+4.3 - HamiltonCycle étant connu NP-dur (puisque NP-complet) et HamiltonCycle se réduisant dans TSP, ça veut dire TSP est au moins aussi difficile. Donc TSP est NP-dur.
+
+Par ailleurs, TSP est NP. TSP est par conséquent NP-complet.
+
+------------------------------
+
+4.4 - La réduction polynomiale n'est pas commutative, donc HamiltonCycle => TSP ne garantit pas l'existence de TSP => HamiltonCycle.
+
+------------------------------
+
+5.1 - HamiltonPath ≤ HamiltonCycle
+
+On peut transformer HamiltonCycle en HamiltonCycle en suivant le codage suivant.
+
+    nombre de sommets => nombre de sommets + 1
+    matrices d'arêtes (True si elle existe, False sinon) => matrices d'arêtes (True si elle existe ou elle concerne le nouveau sommet, False sinon) 
+
+------------------------------
+
+5.3 - La réduction polynomiale est transitive. Donc si HamiltonPath => HamiltonCycle et HamiltonCycle => TSP alors HamiltonPath => TSP.
+
+------------------------------
+
+Optimisation versus Décision 
+
+7 - Avec A qui se réduit en B de façon polynomiale, on peut déduire que si A est difficile alors B l'est et si B est facile alors A l'est.
+
+TSP peut se réduire très rapidement en TSPOpt1 (même nombre de villes, même matrice), il suffit ensuite de regarder si le l calculé par TSPOpt1 est inférieur ou égal à la longueur autorisée de TSP.
+Donc si TSPOpt1 était P, TSP le serait.
+
+Pour TSPOpt2, la réduction est rapide (même données), il suffit de considérer la tournée minimale comme le certificat et de le tester avec la longueur autorisée.
+
+------------------------------
+
+8 - Si TSP était P, il suffirait de l'exécuter plusieurs fois en incrémentant la valeur de la longueur autorisée et s'arrêter quand le problème renverrait vrai. La complexité serait polynomiale car éxecuter plusieurs fois un P ne change pas sa classe de complexité (P est close par étoile et par concaténation).
