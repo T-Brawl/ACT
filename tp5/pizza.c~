@@ -1,0 +1,59 @@
+struct coord_s {
+  int x;
+  int y;
+};
+
+struct part_s{
+  struct coord_s top_l;
+  struct coord_s bot_r
+};
+
+struct list_part_s{
+  struct part_s next;
+  struct part_s last;
+}
+
+struct cert_s{
+  int nb_part;
+  struct part_s * arr;
+}
+
+int is_valid(struct part_s * arr_p,int arr_p_c, char **arr_t, coord_s * end, int ham, int size_max){
+  int i,j,k;
+  for(i=0;i<arr_p_c;i++){
+    struct part_s part= arr_p[i];
+    int nb_ham=0;
+    int nb_c=0;
+    for(j=part.top_l.x; j<=part.bot_r.x){
+      for(k=part.top_l.y;k<=part.bot){
+	switch (arr_t[j][k]) {
+	case 'u' :
+	  return -2;
+	case 'H' :
+	  nb_ham++;
+	default:
+	  nb_c++;
+	  arr_t[j][k]='u';
+	}
+      }
+    }
+    if(nb_ham<ham){
+      return -1;
+    }
+    if(nb_c>size_max){
+      return -3
+    }
+    
+  }
+  return 0;
+}
+
+
+void generation(struct list_part_s *head, int ham, int size_max, int arr_h, int arr_w, char **arr){
+  int i,j;
+  for(i=0;i<arr_w;i++){
+    for(j=0;j<arr_h;j++){
+      
+    }
+  }
+}
