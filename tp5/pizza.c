@@ -55,24 +55,30 @@ int is_valid(struct part_s * arr_p,int arr_p_c, char **arr_t, int ham, int size_
 }
 
 
-struct list_part_s * gen_part_for(int i,int j, int arr_w,int arr_h,char** arr ,int ham, int size_max, struct list_part_s *ptn){
+struct list_part_s * gen_part_for(int i,int j, int arr_h,int arr_w,char** arr ,int ham, int size_max, struct list_part_s *ptn){
   int k,l,m;
   for(k=i;k<arr_w;k++){
+    printf("k %d\n",k);
     
     if(i-k> size_max){
       break;
     }
     int nb_ham=0;
-    for(l=j;j<arr_h;l++){
+    for(l=j;l<arr_h;l++){
+      printf("l %d  ham %d\n",l,nb_ham);
       if((i-k+1)*(j-l+1)>size_max){
 	break;
       }
       for(m=i;m<=k; m++){
+	printf("M %d\n",m);
+	printf("plante là ? \n");
+	printf("case est un %c\n",arr[m][l]);
 	if(arr[m][l]=='H'){
 	  nb_ham++;
 	}
       }
       if(nb_ham>ham){
+	printf("plante ici ? \n");
 	ptn->next=(struct list_part_s*)malloc(sizeof(struct list_part_s));
 	ptn->next->previous=ptn;
 	ptn=ptn->next;
@@ -92,7 +98,9 @@ struct list_part_s * generation( int ham, int size_max, int arr_h, int arr_w, ch
   struct list_part_s * head, *res;
   res=head=(struct list_part_s*)malloc(sizeof(struct list_part_s));
   for(i=0;i<arr_w;i++){
+    printf("i %d\n",i);
     for(j=0;j<arr_h;j++){
+    printf("j %d\n",j);
       head = gen_part_for(i,j,arr_w,arr_h, arr,ham, size_max,head);
     }
   }
@@ -126,8 +134,10 @@ int main(int argc, char** argv){
   printf("je debug %d %d %d %d \n", entry[0], entry[1], entry[2], entry[3]);
   
   ind=0;
-  while (arr[ind] != NULL){
-    fgets(arr[ind], entry[1], fichier);
+  while (ind<entry[0] ){
+    fgets(arr[ind], entry[1]+1, fichier);
+    printf("%s\n",arr[ind]);
+    printf("%s\n",arr[ind]);
     ind++;
   }
   printf("je debug :D\n");
