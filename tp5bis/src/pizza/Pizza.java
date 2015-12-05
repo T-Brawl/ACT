@@ -77,10 +77,13 @@ public class Pizza {
 		List<PartPizza> liste = parts();
 		StringBuilder builder = new StringBuilder();
 		builder.append(liste.size());
+		int score = 0;
 		for(PartPizza part : liste) {
 			builder.append("\n");
 			builder.append(part.toString());
+			score += part.getSize();
 		}
+		System.out.println(liste.size()+" parts\nCouverture : "+score+" points");
 		return builder.toString();
 	}
 	
@@ -92,9 +95,10 @@ public class Pizza {
 		for (int i=p.top_left.x;i<=p.bottom_right.x;i++) {
 			for (int j=p.top_left.y;j<=p.bottom_right.y;j++) {
 				if(pizza[i][j] == 'H') enoughHam++;
+				if (enoughHam >= ham) return true;
 			}
 		}
-		return enoughHam >= ham;
+		return false;
 	}
 
 	private List<Point> allMultiplications(int number) {
