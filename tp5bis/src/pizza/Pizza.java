@@ -2,7 +2,6 @@ package pizza;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Pizza {
-	
 	
 	char[][] pizza;	
 	int height;	
@@ -39,30 +37,29 @@ public class Pizza {
 	}
 	
 	public List<PartPizza> parts()  {
-		List<pizza.PartPizza> liste = new ArrayList<PartPizza>();
-		List<pizza.PartPizza> lesParts = new ArrayList<PartPizza>();
+		List<pizza.PartPizza> allPossibilities = new ArrayList<PartPizza>();
+		List<pizza.PartPizza> compatiblesParts = new ArrayList<PartPizza>();
 		
-		List<Point> multiplications = factors(size);
+		List<Point> multiplications = allMultiplications(size);
 
 		
-		for(int i=0;i<height;i++) { //for(int i=0;i<height;i++) {
-			for(int j=0;j<width;j++) { //for(int j=0;j<width;j++) {
+		for(int i=0;i<height;i++) { 
+			for(int j=0;j<width;j++) { 
 
 				for(Point fois : multiplications) {
 					PartPizza tmp = new PartPizza(i,j,i+fois.x-1,j+fois.y-1);
-					if(isValid(tmp)) liste.add(tmp);
+					if(isValid(tmp)) allPossibilities.add(tmp);
 				}
 				
 			}
 		}
-		//Collections.shuffle(liste);
+		//Collections.shuffle(allPossibilities);
 		
-		for(PartPizza tmp : liste) {
-
-			if(!overlaps(tmp,lesParts)) lesParts.add(tmp);
+		for(PartPizza tmp : allPossibilities) {
+			if(!overlaps(tmp,compatiblesParts)) compatiblesParts.add(tmp);
 		}
 		
-		return lesParts;
+		return compatiblesParts;
 	}
 	
 	
@@ -100,7 +97,7 @@ public class Pizza {
 		return enoughHam >= ham;
 	}
 
-	private List<Point> factors(int number) {
+	private List<Point> allMultiplications(int number) {
 		List<Point> multiplications = new ArrayList<Point>();
 		for(int n = ham;n<=number;n++) {
 			for(int i = 1;i<=n;i++) {
